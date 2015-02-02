@@ -19,3 +19,11 @@ diagram.connector = function(x, y, data)
 
     this.data = data;
 }
+
+/**
+ * Render connector.
+ */
+diagram.connector.prototype.render = function()
+{
+
+}

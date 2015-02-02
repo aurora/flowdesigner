@@ -137,10 +137,10 @@ diagram.node.prototype.render = function(parent)
 
     node.append('rect').attr({
         'width': diagram.node.defaultWidth,
-        'height': 20 + cn * 10,
+        'height': 30 + cn * 15,
         'stroke': 'black',
         'fill': 'blue',
-        'fill-opacity': 0.9,
+        'fill-opacity': 0.85,
         'rx': 5,
         'ry': 5,
         'x': 0,
@@ -153,5 +153,29 @@ diagram.node.prototype.render = function(parent)
         'fill': 'white',
         'x': 5,
         'y': 5
+    });
+
+    // render connectors
+    var i, cnt;
+
+    this.data.input.forEach(function(data, idx) {
+        var cn = node.append('g').attr('transform', 'translate(' + 10 + ',' + (30 + (idx * 17)) + ')');
+        cn.append('circle').attr({
+            'cx': 0,
+            'cy': 0,
+            'r': 6,
+            'stroke': 'black',
+            'stroke-width': 2,
+            'fill': 'white',
+            'cursor': 'crosshair'
+        });
+
+        cn.append('text').text(data.label).attr({
+            'alignment-baseline': 'middle',
+            'stroke': 'none',
+            'fill': 'white',
+            'x': 10,
+            'y': 2
+        });
     });
 }
