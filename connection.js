@@ -15,6 +15,8 @@ diagram.connection = function(start, end)
 {
     console.log(start.node);
 
+    this.g = d3.select('#canvas').append
+
     // create start point of connection
     this.start = {
         x: 0,
