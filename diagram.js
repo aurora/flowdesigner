@@ -26,20 +26,6 @@ var diagram = function(canvas, nodes)
 }
 
 /**
- * Connection drag and drop.
- */
-diagram.connector.onDragDrop = function(dragHandler, dropHandler)
-{
-    var drag = d3.behavior.drag();
-
-    drag.on('dragstart', function(d) {
-        d3.select(this).moveToFront();
-    }).on('drag', dragHandler).on('dragend', dropHandler);
-
-    return drag;
-}
-
-/**
  * Add a node to diagram.
  *
  * @param   object      data                Node data.

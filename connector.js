@@ -13,6 +13,22 @@
 diagram.connector = function(data)
 {
     this.data = data;
+    this.node = null;
+}
+
+/**
+ * Create connection between two connectors.
+ */
+diagram.connector.onDragDrop = function(start, dragHandler, dropHandler)
+{
+    var drag = d3.behavior.drag();
+    var connection;
+
+    drag.on('dragstart', function(d) {
+        connection = new diagram.connection(start);
+    }).on('drag', dragHandler).on('dragend', dropHandler);
+
+    return drag;
 }
 
 /**
@@ -24,19 +40,23 @@ diagram.connector = function(data)
  */
 diagram.connector.prototype.render = function(parent, x, y)
 {
-    var cn = parent.append('g').attr('transform', 'translate(' + x + ',' + y + ')');
+    this.node = parent.append('g').attr('transform', 'translate(' + x + ',' + y + ')');
 
-    cn.data([{'x': x, 'y': y}]).append('circle').attr({
-        'cx': 0,
-        'cy': 0,
+    this.node.data([{'x': 0, 'y': 0}]).append('circle').attr({
+        'cx': function(d) { return d.x; },
+        'cy': function(d) { return d.y; },
         'r': 6,
         'stroke': 'black',
         'stroke-width': 2,
         'fill': 'white',
         'cursor': 'crosshair'
-    });
+    }).call(diagram.connector.onDragDrop(
+        this,
+        function(d) {},
+        function(d) {}
+    ));
 
-    cn.append('text').text(this.data.label).attr({
+    this.node.append('text').text(this.data.label).attr({
         'alignment-baseline': 'middle',
         'stroke': 'none',
         'fill': 'white',
