@@ -17,6 +17,21 @@ diagram.node = function(data)
 
     this.data = data;
     this.selected = false;
+
+    this.input = [];
+    this.output = [];
+
+    if (this.data.input.length > 0) {
+        this.data.input.forEach(function(data) {
+            this.input.push(new diagram.connector(data));
+        }, this);
+    }
+
+    if (this.data.output.length > 0) {
+        this.data.output.forEach(function(data) {
+            this.output.push(new diagram.connector(data));
+        }, this);
+    }
 }
 
 /**
@@ -96,22 +111,6 @@ diagram.node.prototype.selected = function()
 }
 
 /**
- * Add an input connector to the node.
- */
-diagram.node.prototype.addInputConnector = function(data)
-{
-    // this.
-}
-
-/**
- * Add an output connector to the node.
- */
-diagram.node.prototype.addOutputConnector = function(data)
-{
-    // this.
-}
-
-/**
  * Render node.
  *
  * @param   SVGNode         parent              Parent node.
@@ -156,26 +155,10 @@ diagram.node.prototype.render = function(parent)
     });
 
     // render connectors
-    var i, cnt;
-
-    this.data.input.forEach(function(data, idx) {
-        var cn = node.append('g').attr('transform', 'translate(' + 10 + ',' + (30 + (idx * 17)) + ')');
-        cn.append('circle').attr({
-            'cx': 0,
-            'cy': 0,
-            'r': 6,
-            'stroke': 'black',
-            'stroke-width': 2,
-            'fill': 'white',
-            'cursor': 'crosshair'
-        });
-
-        cn.append('text').text(data.label).attr({
-            'alignment-baseline': 'middle',
-            'stroke': 'none',
-            'fill': 'white',
-            'x': 10,
-            'y': 2
-        });
-    });
+    this.input.forEach(function(connector, idx) {
+        connector.render(node, 10, 30 + (idx * 17));
+    }, this);
+    this.output.forEach(function(connector, idx) {
+        connector.render(node, 10, 30 + (idx * 17));
+    }, this);
 }

@@ -19,10 +19,24 @@ var diagram = function(canvas, nodes)
     nodes = nodes || [];
 
     if (nodes.length > 0) {
-        for (var i = 0, cnt = nodes.length; i < cnt; ++i) {
-            this.addNode(nodes[i]);
-        }
+        nodes.forEach(function(node) {
+            this.addNode(node);
+        }, this);
     }
+}
+
+/**
+ * Connection drag and drop.
+ */
+diagram.connector.onDragDrop = function(dragHandler, dropHandler)
+{
+    var drag = d3.behavior.drag();
+
+    drag.on('dragstart', function(d) {
+        d3.select(this).moveToFront();
+    }).on('drag', dragHandler).on('dragend', dropHandler);
+
+    return drag;
 }
 
 /**
@@ -37,4 +51,14 @@ diagram.prototype.addNode = function(data)
     this.nodes.push(node);
 
     node.render(this.canvas);
+}
+
+/**
+ * Draw node connections.
+ *
+ * @param   array       data                Connections to draw.
+ */
+diagram.prototype.addConnections = function(data)
+{
+
 }

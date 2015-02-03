@@ -16,21 +16,30 @@
             {
                 'x': 10,
                 'y': 10,
+                'name': 'node-1',
                 'label': 'Node #1',
                 'input': [
-                    {'label': 'Image'},
-                    {'label': 'Control'}
+                    {'name': 'in-1', 'label': 'Image', 'scope': 'image'},
+                    {'name': 'in-2', 'label': 'Control', 'scope': 'video'}
                 ]
             },
             {
                 'x': 10,
                 'y': 200,
+                'name': 'node-2',
                 'label': 'Node #2'
             },
             {
                 'x': 10,
                 'y': 400,
+                'name': 'node-3',
                 'label': 'Node #3'
+            }
+        ]);
+        d.addConnections([
+            {
+                'source': {'node': 'node-1', 'connector': 'in-1'},
+                'target': {'node': 'node-1', 'connector': 'in-2'}
             }
         ]);
         </script>
