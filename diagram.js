@@ -32,7 +32,7 @@ var diagram = function(canvas, nodes)
  */
 diagram.prototype.addNode = function(data)
 {
-    var node = new diagram.node(data);
+    var node = new node_types[data.node](data);
 
     this.nodes.push(node);
 

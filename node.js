@@ -9,29 +9,26 @@
  * Constructor.
  *
  * @param   object          data                Node configuration.
+ * @param   object          connectors          Input/Output connectors.
  */
-diagram.node = function(data)
+diagram.node = function(data, connectors)
 {
-    data.input = data.input || [];
-    data.output = data.output || [];
-
     this.data = data;
     this.selected = false;
+
+    connectors = connectors || {'input': [], 'output': []};
 
     this.input = [];
     this.output = [];
 
-    if (this.data.input.length > 0) {
-        this.data.input.forEach(function(data) {
-            this.input.push(new diagram.connector(data));
-        }, this);
-    }
+    // input connectors
+    connectors.input.forEach(function(data) {
+        this.input.push(new diagram.connector(data));
+    }, this);
 
-    if (this.data.output.length > 0) {
-        this.data.output.forEach(function(data) {
-            this.output.push(new diagram.connector(data));
-        }, this);
-    }
+    connectors.output.forEach(function(data) {
+        this.output.push(new diagram.connector(data));
+    }, this);
 }
 
 /**
@@ -117,7 +114,7 @@ diagram.node.prototype.selected = function()
  */
 diagram.node.prototype.render = function(parent)
 {
-    var cn = Math.max(this.data.input.length, this.data.output.length);
+    var cn = Math.max(this.input.length, this.output.length);
     var me = this;
 
     var node = parent.data([{'x': this.data.x, 'y': this.data.y}]).append('g').attr('transform', function(d) {
