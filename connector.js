@@ -26,7 +26,13 @@ diagram.connector.onDragDrop = function(start, dragHandler, dropHandler)
 
     drag.on('dragstart', function(d) {
         connection = new diagram.connection(start);
-    }).on('drag', dragHandler).on('dragend', dropHandler);
+        
+        d3.event.sourceEvent.stopPropagation();
+    }).on('drag', function(d) {
+        connection.drag(d);
+    }).on('dragend', function(d) {
+        console.log('connector drag stop', connection);
+    });
 
     return drag;
 }
@@ -50,11 +56,7 @@ diagram.connector.prototype.render = function(parent, x, y)
         'stroke-width': 2,
         'fill': 'white',
         'cursor': 'crosshair'
-    }).call(diagram.connector.onDragDrop(
-        this,
-        function(d) {},
-        function(d) {}
-    ));
+    }).call(diagram.connector.onDragDrop(this));
 
     this.node.append('text').text(this.data.label).attr({
         'alignment-baseline': 'middle',
