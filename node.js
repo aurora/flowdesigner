@@ -8,11 +8,14 @@
 /**
  * Constructor.
  *
+ * @param   diagram         diagram             Diagram instance.
  * @param   object          data                Node configuration.
  * @param   object          connectors          Input/Output connectors.
  */
-diagram.node = function(data, connectors)
+diagram.node = function(dia, data, connectors)
 {
+    this.diagram = dia;
+    
     this.data = data;
     this.selected = false;
 
@@ -32,18 +35,18 @@ diagram.node = function(data, connectors)
 }
 
 /**
- * Default node width.
+ * Width.
  *
  * @type    int
  */
-diagram.node.defaultWidth = 250;
+diagram.node.prototype.width = 250;
 
 /**
  * Default node height.
  *
  * @param   int
  */
-diagram.node.defaultHeight = 40;
+diagram.node.prototype.height = 40;
 
 /**
  * Default connector radius.
@@ -53,13 +56,11 @@ diagram.node.defaultHeight = 40;
 diagram.node.defaultConnectorRadius = 5;
 
 /**
- * Helper function to move node in foreground.
+ * Default color.
+ *
+ * @type    string
  */
-d3.selection.prototype.moveToFront = function() {
-    return this.each(function() {
-        this.parentNode.appendChild(this);
-    });
-};
+diagram.node.defaultColor = ''
 
 /**
  * Node drag and drop.
@@ -112,10 +113,12 @@ diagram.node.prototype.selected = function()
  *
  * @param   SVGNode         parent              Parent node.
  */
-diagram.node.prototype.render = function(parent)
+diagram.node.prototype.render = function()
 {
     var cn = Math.max(this.input.length, this.output.length);
     var me = this;
+
+    var parent = this.diagram.getLayer('nodes');
 
     var node = parent.data([{'x': this.data.x, 'y': this.data.y}]).append('g').attr('transform', function(d) {
         return "translate(" + d.x + "," + d.y + ")";

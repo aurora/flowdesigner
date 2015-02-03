@@ -15,7 +15,7 @@ diagram.connection = function(start, end)
 {
     console.log(start.node);
 
-    this.g = d3.select('#canvas').append
+    // this.g = d3.select('#canvas').append
 
     // create start point of connection
     this.start = {
@@ -77,10 +77,10 @@ diagram.connection.onDragDrop = function()
  */
 diagram.connection.prototype.drag = function(d)
 {
-    this.end.attr(
-        'cx': d3.event.dx,
-        'cy': d3.event.dy
-    );
+    // this.end.attr(
+    //     'cx': d3.event.dx,
+    //     'cy': d3.event.dy
+    // );
 
     // console.log(d);
 }

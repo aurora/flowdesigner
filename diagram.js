@@ -9,20 +9,44 @@
  * Constructor.
  *
  * @param   mixed       canvas              Canvas selector.
- * @param   array       nodes               Optional array with nodes to render in canvas.
  */
-var diagram = function(canvas, nodes)
+var diagram = function(canvas)
 {
+    // get D3 node of canvas
     this.canvas = d3.select(canvas);
+
+    // build layers: node, connections
+    this.layers = {
+        'nodes': this.canvas.append('g'),
+        'connections': this.canvas.append('g')
+    };
+
     this.nodes = [];
+}
 
-    nodes = nodes || [];
+/**
+ * Return specified layer object. Returns canvas object if no layer name is provided.
+ *
+ * @param   string      layer               Optional name of layer.
+ * @return  Node                            Layer object.
+ */
+diagram.prototype.getLayer = function(name)
+{
+    return (typeof name !== 'undefined'
+            ? this.layers[name]
+            : this.canvas);
+}
 
-    if (nodes.length > 0) {
-        nodes.forEach(function(node) {
-            this.addNode(node);
-        }, this);
-    }
+/**
+ * Build diagram from nodes.
+ * 
+ * @param   array       nodes               Array of nodes.
+ */
+diagram.prototype.build = function(nodes)
+{
+    nodes.forEach(function(data) {
+        this.addNode(data);
+    }, this);
 }
 
 /**
@@ -32,19 +56,9 @@ var diagram = function(canvas, nodes)
  */
 diagram.prototype.addNode = function(data)
 {
-    var node = new node_types[data.node](data);
+    var node = new node_types[data.node](this, data);
 
     this.nodes.push(node);
 
     node.render(this.canvas);
-}
-
-/**
- * Draw node connections.
- *
- * @param   array       data                Connections to draw.
- */
-diagram.prototype.addConnections = function(data)
-{
-
 }

@@ -8,9 +8,9 @@
 var node_types = {};
 
 (function() {
-    function node(data)
+    function node(dia, data)
     {
-        diagram.node.call(this, data, {
+        diagram.node.call(this, dia, data, {
             'input': [
                 {'name': 'in-1', 'label': 'Image', 'scope': 'image'},
                 {'name': 'in-2', 'label': 'Control', 'scope': 'video'}
