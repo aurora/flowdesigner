@@ -31,8 +31,8 @@
      */
     wire.prototype.addWire = function(source, target)
     {
-        var sxy = this.getConnectorCenter(source.node());
-        var txy = this.getConnectorCenter(target.node());
+        var sxy = this.getConnectorCenter(source.cn.node());
+        var txy = this.getConnectorCenter(target.cn.node());
         
         this.diagram.getLayer('wires').append('line').attr({
             'x1': sxy.x,
@@ -72,63 +72,59 @@
     /**
      * Register a connector.
      *
-     * @param   string          type            Type of connector.
-     * @param   D3Node          cn              D3 node of connector.
-     * @param   diagram.node    node            Node instance the connector belongs to.
-     * @return  string                          Registry key for connection.
+     * @param   diagram.connector    connector      Instance of connector.
+     * @return  string                              Registry key for connection.
      */
-    wire.prototype.registerConnector = function(type, cn, node)
+    wire.prototype.registerConnector = function(connector)
     {
+        var type = connector.getType();
+        // var node = connector.getNode();
         var key = 'cn-' + (++this.idx);
         var me = this;
         
-        me.registry[key] = cn;
+        me.registry[key] = connector;
         
         if (type == 'output') {
             // source target of a wire
-            cn.call((function() {
-                var drag = d3.behavior.drag();
-
-                drag.on('dragstart', function(d) {
-                    d3.event.sourceEvent.stopPropagation();
-
-                    var xy = me.getConnectorCenter(d3.event.sourceEvent.target);
-                    
-                    me.wire = me.diagram.getLayer('draw').append('line').attr({
-                        'x1': xy.x,
-                        'y1': xy.y,
-                        'x2': xy.x,
-                        'y2': xy.y,
-                        'stroke-width': 2,
-                        'stroke': 'red'
-                    });
-                    
-                    me.start = key;
-                }).on('drag', function(d) {
-                    if (me.wire !== null && me.end === null) {
-                        var mxy = d3.mouse(me.diagram.getLayer().node());
-                    
-                        me.wire.attr({'x2': mxy[0], 'y2': mxy[1]});
-                    }
-                }).on('dragend', function(d) {
-                    if (me.wire !== null) {
-                        me.wire.remove();
-                        
-                        if (me.end !== null) {
-                            // wire source and target element
-                            me.addWire(me.registry[me.start], me.registry[me.end]);
-                        }
-                        
-                        me.start = null;
-                        me.end = null;
-                    }
+            connector.onDragStart = function(d) {
+                var xy = me.getConnectorCenter(d3.event.sourceEvent.target);
+                
+                me.wire = me.diagram.getLayer('draw').append('line').attr({
+                    'x1': xy.x,
+                    'y1': xy.y,
+                    'x2': xy.x,
+                    'y2': xy.y,
+                    'stroke-width': 2,
+                    'stroke': 'red'
                 });
-
-                return drag;
-            })());
+                    
+                me.start = key;
+            }
+            connector.onDrag = function(d) {
+                console.log(me.start);
+                
+                if (me.wire !== null && me.end === null) {
+                    var mxy = d3.mouse(me.diagram.getLayer().node());
+                
+                    me.wire.attr({'x2': mxy[0], 'y2': mxy[1]});
+                }
+            };
+            connector.onDragEnd = function(d) {
+                if (me.wire !== null) {
+                    me.wire.remove();
+                    
+                    if (me.end !== null) {
+                        // wire source and target element
+                        me.addWire(me.registry[me.start], me.registry[me.end]);
+                    }
+                    
+                    me.start = null;
+                    me.end = null;
+                }
+            };
         } else {
             // drop target for a wire
-            cn.on('mouseover', function() {
+            connector.onMouseOver = function() {
                 d3.event.stopPropagation();
 
                 if (me.wire !== null) {
@@ -139,11 +135,12 @@
                     
                     me.wire.attr({'x2': xy.x, 'y2': xy.y});
                 }
-            }).on('mouseout', function() {
+            }
+            connector.onMouseOut = function() {
                 d3.event.stopPropagation();
 
                 me.end = null;
-            });
+            };
         }
         
         return key;

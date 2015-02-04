@@ -35,6 +35,8 @@
         this.data = data || {};
         this.node = null;
         
+        this.registry = [];
+        
         if (!('id' in this.data)) {
             this.data.id = 'node-' + (++id);
         }
@@ -153,49 +155,19 @@
         });
 
         // render input connectors
-        this.node_input.forEach(function(connector, idx) {
-            var cn = this.node.data([{'x': 10, 'y': this.node_height + idx * this.node_line_height}]).append('circle').attr({
-                'cx': function(d) { return d.x; },
-                'cy': function(d) { return d.y; },
-                'r': 6,
-                'stroke': 'black',
-                'stroke-width': 2,
-                'fill': 'white'
-            });
-            
-            this.diagram.wire.registerConnector('input', cn, this);
-            
-            this.node.append('text').text(connector.label).attr({
-                'alignment-baseline': 'middle',
-                'stroke': 'none',
-                'fill': 'white',
-                'x': 20,
-                'y': this.node_height + idx * this.node_line_height + 2
-            });
+        this.node_input.forEach(function(data, idx) {
+            var connector = new diagram.connector('input', this, data);
+            connector.render(this.node, 10, this.node_height + idx * this.node_line_height);
+
+            this.registry.push(this.diagram.wire.registerConnector(connector));
         }, this);
         
         // render output connectors
-        this.node_output.forEach(function(connector, idx) {
-            var cn = this.node.data([{'x': this.node_width - 10, 'y': this.node_height + idx * this.node_line_height}]).append('circle').attr({
-                'cx': function(d) { return d.x; },
-                'cy': function(d) { return d.y; },
-                'r': 6,
-                'stroke': 'black',
-                'stroke-width': 2,
-                'fill': 'white',
-                'cursor': 'crosshair'
-            });
-            
-            this.diagram.wire.registerConnector('output', cn, this);
-            
-            this.node.append('text').text(connector.label).attr({
-                'alignment-baseline': 'middle',
-                'text-anchor': 'end',
-                'stroke': 'none',
-                'fill': 'white',
-                'x': this.node_width - 20,
-                'y': this.node_height + idx * this.node_line_height + 2
-            });
+        this.node_output.forEach(function(data, idx) {
+            var connector = new diagram.connector('output', this, data);
+            connector.render(this.node, this.node_width - 10, this.node_height + idx * this.node_line_height);
+
+            this.registry.push(this.diagram.wire.registerConnector(connector));
         }, this);
     }
     
