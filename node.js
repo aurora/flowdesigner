@@ -117,6 +117,16 @@
     }
 
     /**
+     * Return node data.
+     *
+     * @return  object                              Node data.
+     */
+    node.prototype.getData = function()
+    {
+        return Object.create(this.data);
+    }
+
+    /**
      * Render node.
      *
      * @param   SVGNode         parent              Parent node.
@@ -139,7 +149,6 @@
                 me.diagram.wire.redrawWires(me.registry);
             },
             function(d) {
-                console.log('dropped', d);
             }
         ));
 

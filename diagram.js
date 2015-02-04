@@ -86,11 +86,23 @@
     /**
      * Return wires.
      *
-     * @return  array                           Export all wires.
+     * @return  array                           Array ofwires.
      */
     diagram.prototype.exportWires = function()
     {
         return this.wire.exportWires();
+    }
+
+    /**
+     * Export nodes.
+     *
+     * @return  array                           Array of nodes.
+     */
+    diagram.prototype.exportNodes = function()
+    {
+        return this.nodes.map(function(node) {
+            return node.getData();
+        });
     }
 
     /**

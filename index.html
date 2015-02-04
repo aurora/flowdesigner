@@ -50,12 +50,13 @@
             }
         ]);
         
-        d.importWires([
-            {'source': 'cn-3', 'target': 'cn-5'},
-            {'source': 'cn-12', 'target': 'cn-6'}
-        ]);
+        // d.importWires([
+        //     {'source': 'cn-3', 'target': 'cn-5'},
+        //     {'source': 'cn-12', 'target': 'cn-6'}
+        // ]);
         
         function ex() {
+            console.log(d.exportNodes());
             console.log(d.exportWires());
         }
         </script>
