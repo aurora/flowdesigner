@@ -39,6 +39,16 @@
     {
         this.connections[target.getId()] = target;
     }
+      
+    /**
+     * Return connections.
+     *
+     * @param   array                                   Connections.
+     */
+    connector.prototype.getConnections = function()
+    {
+        return Object.keys(this.connections).map(function(k) { return this.connections[k]; }, this);
+    }
   
     /**
      * Remove connection.

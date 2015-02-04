@@ -7,6 +7,17 @@
 
 ;diagram.wire = (function() {
     /**
+     * Calculate bezier wire path.
+     */
+    function calcPath(x1, y1, x2, y2) 
+    {
+        return 'M ' + x1 + ', ' + y1 + 'C ' + 
+                (x1 + (x2 - x1) / 2) + ', ' + y1 + ' ' +
+                (x2 - (x2 - x1) / 2) + ', ' + y2 + ' ' + 
+                x2 + ', ' + y2;
+    }
+    
+    /**
      * Constructor.
      *
      * @param   diagram         dia             Diagram instance.
@@ -30,20 +41,19 @@
         var sxy = this.getConnectorCenter(source.cn.node());
         var txy = this.getConnectorCenter(target.cn.node());
 
-        var wire = this.diagram.getLayer('wires').append('line').attr({
-            'x1': sxy.x,
-            'y1': sxy.y,
-            'x2': txy.x,
-            'y2': txy.y,
-            'stroke-width': 2,
-            'stroke': 'green'
+        var wire = this.diagram.getLayer('wires').append('path').attr({
+            'd': calcPath(sxy.x, sxy.y, txy.x, txy.y),
+            'stroke-width': 3,
+            'stroke': 'green',
+            'fill': 'none'
         });
         
         source.addConnection(target);
         target.addConnection(source);
         
-        this.wires[target.getId()] = wire;
-        this.wires[source.getId()] = wire;
+        var key = [source.getId(), target.getId()].sort().join('-');
+        
+        this.wires[key] = wire;
     }
 
     /**
@@ -54,15 +64,18 @@
     wire.prototype.redrawWires = function(ids)
     {
         ids.forEach(function(id) {
-            if (id in this.wires) {
-                var xy = this.getConnectorCenter(this.registry[id].cn.node());
+            var source = this.registry[id];
+            
+            this.registry[id].getConnections().forEach(function(target) {
+                var key = [source.getId(), target.getId()].sort().join('-');
 
-                if (this.registry[id].getType() == 'output') {
-                    this.wires[id].attr({'x1': xy.x, 'y1': xy.y});
-                } else {
-                    this.wires[id].attr({'x2': xy.x, 'y2': xy.y});
+                if (key in this.wires) {
+                    var sxy = this.getConnectorCenter(this.registry[id].cn.node());
+                    var txy = this.getConnectorCenter(target.cn.node());
+                    
+                    this.wires[key].attr({'d': calcPath(sxy.x, sxy.y, txy.x, txy.y)});
                 }
-            }
+            }, this);
         }, this);
     }
 
