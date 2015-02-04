@@ -18,6 +18,27 @@
     }
 
     /**
+     * Calculate helper line x,y.
+     */
+    function calcLine(x1, y1, x2, y2)
+    {
+        var vx = x2 - x1;
+        var vy = y2 - y1;
+
+        var d = Math.sqrt(vx * vx + vy * vy);
+
+        vx /= d;
+        vy /= d;
+
+        d = Math.max(0, d - 5);
+
+        return {
+            'x': Math.ceil(x1 + vx * d),
+            'y': Math.ceil(y1 + vy * d)
+        }
+    }
+
+    /**
      * Constructor.
      *
      * @param   diagram         dia             Diagram instance.
@@ -199,9 +220,12 @@
                 }
                 connector.onDrag = function(d) {
                     if (wire !== null && end === null) {
+                        var sxy = {'x': parseInt(wire.attr('x1'), 10), 'y': parseInt(wire.attr('y1'), 10)};
                         var mxy = d3.mouse(me.diagram.getLayer().node());
 
-                        wire.attr({'x2': mxy[0], 'y2': mxy[1]});
+                        var txy = calcLine(sxy.x, sxy.y, mxy[0], mxy[1]);
+
+                        wire.attr({'x2': txy.x, 'y2': txy.y});
                     }
                 };
                 connector.onDragEnd = function(d) {
@@ -229,9 +253,12 @@
                             // ... but only if connection is allowed
                             end = key;
 
+                            var sxy = {'x': parseInt(wire.attr('x1'), 10), 'y': parseInt(wire.attr('y1'), 10)};
                             var xy = me.getConnectorCenter(d3.event.target);
 
-                            wire.attr({'x2': xy.x, 'y2': xy.y});
+                            var txy = calcLine(sxy.x, sxy.y, xy.x, xy.y);
+
+                            wire.attr({'x2': txy.x, 'y2': txy.y});
                         }
                     }
                 }
