@@ -13,7 +13,7 @@
     }
     </style>
     <body>
-        <svg id="canvas" width="100%" height="100%"></svg>
+        <svg id="canvas" width="100%" height="95%"></svg>
         <script type="text/javascript">
         var d = new diagram('#canvas');
         d.addScope('image', {
@@ -50,12 +50,15 @@
             }
         ]);
         
-        // d.addConnections([
-        //     {
-        //         'source': {'node': 'node-1', 'connector': 'in-1'},
-        //         'target': {'node': 'node-1', 'connector': 'in-2'}
-        //     }
-        // ]);
+        d.importWires([
+            {'source': 'cn-3', 'target': 'cn-5'},
+            {'source': 'cn-12', 'target': 'cn-6'}
+        ]);
+        
+        function ex() {
+            console.log(d.exportWires());
+        }
         </script>
+        <input type="button" value="Export" onclick="ex();" />
     </body>
 </html>

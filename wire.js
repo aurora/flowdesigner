@@ -61,7 +61,34 @@
         
         var key = [source.getId(), target.getId()].sort().join('-');
         
-        this.wires[key] = wire;
+        this.wires[key] = {'source': source, 'target': target, 'wire': wire};
+    }
+
+    /**
+     * Import wires.
+     *
+     * @return  array                           Export all wires.
+     */
+    wire.prototype.importWires = function(wires)
+    {
+        wires.forEach(function(wire) {
+            this.addWire(wire.source, wire.target);
+        }, this);
+    }
+
+    /**
+     * Return wires.
+     *
+     * @return  array                           Export all wires.
+     */
+    wire.prototype.exportWires = function()
+    {
+        return Object.keys(this.wires).map(function(k) { 
+            return {
+                'source': this.wires[k].source.getId(), 
+                'target': this.wires[k].target.getId()
+            }; 
+        }, this);
     }
 
     /**
@@ -81,7 +108,7 @@
                     var sxy = this.getConnectorCenter(this.registry[id].cn.node());
                     var txy = this.getConnectorCenter(target.cn.node());
                     
-                    this.wires[key].attr({'d': calcPath(sxy.x, sxy.y, txy.x, txy.y)});
+                    this.wires[key].wire.attr({'d': calcPath(sxy.x, sxy.y, txy.x, txy.y)});
                 }
             }, this);
         }, this);

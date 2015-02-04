@@ -74,25 +74,23 @@
     }
 
     /**
-     * Add multiple wires.
+     * Import wires.
      *
-     * @param   array       wires               Array of wires.
+     * @param   array       wires               Wires to build.
      */
-    diagram.prototype.addWires = function(wires)
+    diagram.prototype.importWires = function(wires)
     {
-        wires.forEach(function(data) {
-            this.addWire(data);
-        }, this);
+        this.wire.importWires(wires);
     }
 
     /**
-     * Add a single wire to diagram.
+     * Return wires.
      *
-     * @param   object      data                Wire data.
+     * @return  array                           Export all wires.
      */
-    diagram.prototype.addWire = function(data)
+    diagram.prototype.exportWires = function()
     {
-        this.wire.addWire(data);
+        return this.wire.exportWires();
     }
 
     /**
