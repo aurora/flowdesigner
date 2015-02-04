@@ -6,6 +6,8 @@
  */
 
 ;diagram.node = (function() {
+    var id = 0;
+    
     /**
      * Node drag and drop.
      */
@@ -30,8 +32,12 @@
     {
         this.diagram = dia;
     
-        this.data = data;
+        this.data = data || {};
         this.node = null;
+        
+        if (!('id' in this.data)) {
+            this.data.id = 'node-' + (++id);
+        }
     }
 
     /**
@@ -89,6 +95,16 @@
     node.prototype.destroy = function()
     {
         // remove wires between this and other nodes, unregister connectors, remove SVG nodes
+    }
+
+    /**
+     * Return ID of node.
+     *
+     * @return  string                              ID of node.
+     */
+    node.prototype.getId = function()
+    {
+        return this.data.id;
     }
 
     /**

@@ -20,7 +20,28 @@
         this.idx = 0;
         
         this.wire = null;
-        this.snap = null;
+        this.start = null;
+        this.end = null;
+
+        this.wires = [];
+    }
+
+    /**
+     * Add a wire.
+     */
+    connectors.prototype.addWire = function(source, target)
+    {
+        var sxy = this.getCenter(source.node());
+        var txy = this.getCenter(target.node());
+        
+        this.diagram.getLayer('wires').append('line').attr({
+            'x1': sxy.x,
+            'y1': sxy.y,
+            'x2': txy.x,
+            'y2': txy.y,
+            'stroke-width': 2,
+            'stroke': 'green'
+        });
     }
 
     /**
@@ -61,6 +82,8 @@
         var key = 'cn-' + (++this.idx);
         var me = this;
         
+        me.registry[key] = cn;
+        
         if (type == 'output') {
             // source target of a wire
             cn.call((function() {
@@ -79,8 +102,10 @@
                         'stroke-width': 2,
                         'stroke': 'red'
                     });
+                    
+                    me.start = key;
                 }).on('drag', function(d) {
-                    if (me.wire !== null && me.snap === null) {
+                    if (me.wire !== null && me.end === null) {
                         var mxy = d3.mouse(me.diagram.getLayer().node());
                     
                         me.wire.attr({'x2': mxy[0], 'y2': mxy[1]});
@@ -89,9 +114,13 @@
                     if (me.wire !== null) {
                         me.wire.remove();
                         
-                        if (me.snap !== null) {
+                        if (me.end !== null) {
                             // wire source and target element
+                            me.addWire(me.registry[me.start], me.registry[me.end]);
                         }
+                        
+                        me.start = null;
+                        me.end = null;
                     }
                 });
 
@@ -104,17 +133,16 @@
 
                 if (me.wire !== null) {
                     // snap wire
-                    me.snap = key;
+                    me.end = key;
 
                     var xy = me.getCenter(d3.event.target);
-                    console.log(xy, key);
                     
                     me.wire.attr({'x2': xy.x, 'y2': xy.y});
                 }
             }).on('mouseout', function() {
                 d3.event.stopPropagation();
 
-                me.snap = null;
+                me.end = null;
             });
         }
         
