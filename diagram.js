@@ -12,23 +12,23 @@
  */
 var diagram = function(canvas)
 {
-    // get D3 node of canvas
     this.canvas = d3.select(canvas);
+    this.nodes = [];
 
     // build layers: node, connections
-    this.layers = {
-        'nodes': this.canvas.append('g'),
-        'connections': this.canvas.append('g')
-    };
 
-    this.nodes = [];
+    this.layers = {
+        'wires': this.canvas.append('g'),
+        'nodes': this.canvas.append('g'),
+    };
 }
 
 /**
- * Return specified layer object. Returns canvas object if no layer name is provided.
+ * Return layer of specified name. Returns the canvas node if no layer name
+ * is specified.
  *
- * @param   string      layer               Optional name of layer.
- * @return  Node                            Layer object.
+ * @param   string      name                Name of layer to get.
+ * @return  node                            Layer node.
  */
 diagram.prototype.getLayer = function(name)
 {
@@ -38,11 +38,11 @@ diagram.prototype.getLayer = function(name)
 }
 
 /**
- * Build diagram from nodes.
+ * Add multiple nodes.
  * 
  * @param   array       nodes               Array of nodes.
  */
-diagram.prototype.build = function(nodes)
+diagram.prototype.addNodes = function(nodes)
 {
     nodes.forEach(function(data) {
         this.addNode(data);
@@ -50,7 +50,7 @@ diagram.prototype.build = function(nodes)
 }
 
 /**
- * Add a node to diagram.
+ * Add a single node to diagram.
  *
  * @param   object      data                Node data.
  */
@@ -60,5 +60,5 @@ diagram.prototype.addNode = function(data)
 
     this.nodes.push(node);
 
-    node.render(this.canvas);
+    node.render(this.getLayer('nodes'));
 }

@@ -5,160 +5,134 @@
  * @author      Harald Lapp <harald@octris.org>
  */
 
-/**
- * Constructor.
- *
- * @param   diagram         diagram             Diagram instance.
- * @param   object          data                Node configuration.
- * @param   object          connectors          Input/Output connectors.
- */
-diagram.node = function(dia, data, connectors)
-{
-    this.diagram = dia;
+;diagram.node = (function() {
+    /**
+     * Node drag and drop.
+     */
+    function onDragDrop(dragHandler, dropHandler)
+    {
+        var drag = d3.behavior.drag();
+
+        drag.on('dragstart', function(d) {
+            d3.select(this).moveToFront();
+        }).on('drag', dragHandler).on('dragend', dropHandler);
+
+        return drag;
+    }
     
-    this.data = data;
-    this.selected = false;
+    /**
+     * Constructor.
+     *
+     * @param   diagram         diagram             Diagram instance.
+     * @param   object          data                Node configuration.
+     */
+    function node(dia, data)
+    {
+        this.diagram = dia;
+    
+        this.data = data;
+    }
 
-    connectors = connectors || {'input': [], 'output': []};
+    /**
+     * Input connectors.
+     *
+     * @type    array
+     */
+    node.prototype.node_input = [];
 
-    this.input = [];
-    this.output = [];
+    /**
+     * Output connectors.
+     *
+     * @type    array
+     */
+    node.prototype.node_output = [];
 
-    // input connectors
-    connectors.input.forEach(function(data) {
-        this.input.push(new diagram.connector(data));
-    }, this);
+    /**
+     * Width.
+     *
+     * @type    int
+     */
+    node.prototype.node_width = 250;
 
-    connectors.output.forEach(function(data) {
-        this.output.push(new diagram.connector(data));
-    }, this);
-}
+    /**
+     * Default node height.
+     *
+     * @type    int
+     */
+    node.prototype.node_height = 40;
 
-/**
- * Width.
- *
- * @type    int
- */
-diagram.node.prototype.width = 250;
+    /**
+     * Default node color.
+     *
+     * @type    string
+     */
+    node.prototype.node_color = '#000055';
 
-/**
- * Default node height.
- *
- * @param   int
- */
-diagram.node.prototype.height = 40;
+    /**
+     * Default connector radius.
+     *
+     * @type    int
+     */
+    node.prototype.connector_radius = 5;
 
-/**
- * Default connector radius.
- *
- * @type    int
- */
-diagram.node.defaultConnectorRadius = 5;
+    /**
+     * Render node.
+     *
+     * @param   SVGNode         parent              Parent node.
+     */
+    node.prototype.render = function(parent)
+    {
+        // render node
+        var cn = Math.max(this.node_input.length, this.node_output.length);
+        var me = this;
 
-/**
- * Default color.
- *
- * @type    string
- */
-diagram.node.defaultColor = ''
+        var node = parent.data([{'x': this.data.x, 'y': this.data.y}]).append('g').attr('transform', function(d) {
+            return "translate(" + d.x + "," + d.y + ")";
+        }).attr('cursor', 'move').call(onDragDrop(
+            function(d) {
+                me.data.x += d3.event.dx;
+                me.data.y += d3.event.dy;
 
-/**
- * Node drag and drop.
- */
-diagram.node.onDragDrop = function(dragHandler, dropHandler)
-{
-    var drag = d3.behavior.drag();
+                d3.select(this).attr('transform', 'translate(' + me.data.x + ',' + me.data.y + ')');
+            },
+            function(d) {
+                console.log('dropped', d);
+            }
+        ));
 
-    drag.on('dragstart', function(d) {
-        d3.select(this).moveToFront();
-    }).on('drag', dragHandler).on('dragend', dropHandler);
+        node.append('rect').attr({
+            'width': this.node_width,
+            'height': this.node_height + cn * 15,
+            'stroke': 'black',
+            'fill': this.node_color,
+            'fill-opacity': 0.85,
+            'rx': 5,
+            'ry': 5,
+            'x': 0,
+            'y': 0
+        });
 
-    return drag;
-}
+        node.append('text').text(this.data.label).attr({
+            'alignment-baseline': 'hanging',
+            'stroke': 'none',
+            'fill': 'white',
+            'x': 5,
+            'y': 5
+        });
 
-/**
- * Select the node.
- */
-diagram.node.prototype.select = function()
-{
-    this.selected = true;
-}
-
-/**
- * Deselect the node.
- */
-diagram.node.prototype.deselect = function()
-{
-    this.selected = false;
-}
-
-/**
- * Toggle the selection of the node.
- */
-diagram.node.prototype.toggleSelected = function()
-{
-    this.selected = !this.selected;
-}
-
-/**
- * Returns true if the node is selected.
- */
-diagram.node.prototype.selected = function()
-{
-    return this.selected;
-}
-
-/**
- * Render node.
- *
- * @param   SVGNode         parent              Parent node.
- */
-diagram.node.prototype.render = function()
-{
-    var cn = Math.max(this.input.length, this.output.length);
-    var me = this;
-
-    var parent = this.diagram.getLayer('nodes');
-
-    var node = parent.data([{'x': this.data.x, 'y': this.data.y}]).append('g').attr('transform', function(d) {
-        return "translate(" + d.x + "," + d.y + ")";
-    }).attr('cursor', 'move').call(diagram.node.onDragDrop(
-        function(d) {
-            me.data.x += d3.event.dx;
-            me.data.y += d3.event.dy;
-
-            d3.select(this).attr('transform', 'translate(' + me.data.x + ',' + me.data.y + ')');
-        },
-        function(d) {
-            console.log('dropped', d);
-        }
-    ));
-
-    node.append('rect').attr({
-        'width': diagram.node.defaultWidth,
-        'height': 30 + cn * 15,
-        'stroke': 'black',
-        'fill': 'blue',
-        'fill-opacity': 0.85,
-        'rx': 5,
-        'ry': 5,
-        'x': 0,
-        'y': 0
-    });
-
-    node.append('text').text(this.data.label).attr({
-        'alignment-baseline': 'hanging',
-        'stroke': 'none',
-        'fill': 'white',
-        'x': 5,
-        'y': 5
-    });
-
-    // render connectors
-    this.input.forEach(function(connector, idx) {
-        connector.render(node, 10, 30 + (idx * 17));
-    }, this);
-    this.output.forEach(function(connector, idx) {
-        connector.render(node, 10, 30 + (idx * 17));
-    }, this);
-}
+        // render input connectors
+        
+        
+        // this.input.forEach(function(connector, idx) {
+        //     connector.render(node, 10, 30 + (idx * 17));
+        // }, this);
+        
+        // render output connectors
+        
+        // this.output.forEach(function(connector, idx) {
+        //     connector.render(node, 10, 30 + (idx * 17));
+        // }, this);
+    }
+    
+    return node;
+})();
