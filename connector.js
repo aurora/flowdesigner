@@ -28,6 +28,9 @@
         if (!('id' in this.data)) {
             this.data.id = 'cn-' + (++id);
         }
+        if (!('scope' in this.data)) {
+            this.data.scope = '';
+        }
     }
     
     /**
@@ -73,6 +76,16 @@
     }
 
     /**
+     * Return scope-name of connector.
+     *
+     * @return string                           Scope-name of connector.
+     */
+    connector.prototype.getScope = function()
+    {
+        return this.data.scope;
+    }
+
+    /**
      * Return node the connector belongs to.
      *
      * @return  diagram.node                    Node.
@@ -80,6 +93,20 @@
     connector.prototype.getNode = function()
     {
         return this.node;
+    }
+
+    /**
+     * Test if it's allowed to connection two connectors. Connections are only
+     * allowed if both connectors have the same scope and if they are not identical
+     * objects.
+     *
+     * @param   diagram.connector   target      Target connector.
+     */
+    connector.prototype.isAllowed = function(target)
+    {
+        return (this.data.scope == target.getScope() &&                     // both connectors of same scope
+                this.node.getId() != target.getNode().getId() &&            // target and source are not the same node
+                typeof this.connections[target.getId()] === 'undefined');   // connectors not already connected
     }
 
     /**
@@ -99,7 +126,9 @@
             'r': 6,
             'stroke': 'black',
             'stroke-width': 2,
-            'fill': 'white'
+            'fill': (this.node.diagram.hasScope(this.data.scope)
+                        ? this.node.diagram.getScope(this.data.scope).color
+                        : 'white')
         });
         
         var label = parent.append('text').text(this.data.label).attr({

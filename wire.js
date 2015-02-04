@@ -37,14 +37,22 @@
     {
         var source = this.registry[start];
         var target = this.registry[end];
+
+        if (!source.isAllowed(target)) {
+            return;
+        }
+        
+        var scope = source.getScope();
         
         var sxy = this.getConnectorCenter(source.cn.node());
         var txy = this.getConnectorCenter(target.cn.node());
 
         var wire = this.diagram.getLayer('wires').append('path').attr({
             'd': calcPath(sxy.x, sxy.y, txy.x, txy.y),
-            'stroke-width': 3,
-            'stroke': 'green',
+            'stroke-width': 4,
+            'stroke': (this.diagram.hasScope(scope)
+                        ? this.diagram.getScope(scope).color
+                        : 'white'),
             'fill': 'none'
         });
         
@@ -165,12 +173,15 @@
                     d3.event.stopPropagation();
 
                     if (wire !== null) {
-                        // snap wire
-                        end = key;
+                        // snap wire ...
+                        if (connector.isAllowed(me.registry[start])) {
+                            // ... but only if connection is allowed
+                            end = key;
 
-                        var xy = me.getConnectorCenter(d3.event.target);
+                            var xy = me.getConnectorCenter(d3.event.target);
                     
-                        wire.attr({'x2': xy.x, 'y2': xy.y});
+                            wire.attr({'x2': xy.x, 'y2': xy.y});
+                        }
                     }
                 }
                 connector.onMouseOut = function() {

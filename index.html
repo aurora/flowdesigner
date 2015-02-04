@@ -16,6 +16,16 @@
         <svg id="canvas" width="100%" height="100%"></svg>
         <script type="text/javascript">
         var d = new diagram('#canvas');
+        d.addScope('image', {
+            'color': '#00aa00'
+        });
+        d.addScope('ctrl', {
+            'color': '#aaaaff'
+        });
+        d.addScope('video', {
+            'color': '#aaaa00'
+        });
+        
         d.addNodes([
             {
                 'x': 10,

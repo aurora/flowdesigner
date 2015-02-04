@@ -15,7 +15,7 @@
     {
         this.canvas = d3.select(canvas);
         this.nodes = [];
-        this.wires = [];
+        this.scopes = {};
 
         this.layers = {
             'wires': this.canvas.append('g'),
@@ -24,6 +24,39 @@
         };
 
         this.wire = new diagram.wire(this);
+    }
+
+    /**
+     * Add a connector scope.
+     *
+     * @param   string      name                Name of scope.
+     * @param   object      settings            Scope settings.
+     */
+    diagram.prototype.addScope = function(name, settings)
+    {
+        this.scopes[name] = settings;
+    }
+
+    /**
+     * Test if scope is available.
+     *
+     * @param   string      name                Name of scope.
+     * @return  bool                            Returns true if scope is available.
+     */
+    diagram.prototype.hasScope = function(name)
+    {
+        return (name in this.scopes);
+    }
+    
+    /**
+     * Return scope settings.
+     *
+     * @param   string      name                Name of scope.
+     * @return  object                          Scope settings.
+     */
+    diagram.prototype.getScope = function(name)
+    {
+        return this.scopes[name];
     }
 
     /**
@@ -59,11 +92,7 @@
      */
     diagram.prototype.addWire = function(data)
     {
-        var wire = new diagram.wire(this, data);
-    
-        this.wires.push(wire);
-    
-        wire.render(this.getLayer('wires'));
+        this.wire.addWire(data);
     }
 
     /**

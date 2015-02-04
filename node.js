@@ -85,6 +85,13 @@
     node.prototype.node_color = '#000055';
 
     /**
+     * Default node opacity.
+     *
+     * @type    string
+     */
+    node.prototype.node_opacity = 0.75;
+
+    /**
      * Default connector radius.
      *
      * @type    int
@@ -141,7 +148,7 @@
             'height': this.node_height + cn * this.node_line_height,
             'stroke': 'black',
             'fill': this.node_color,
-            'fill-opacity': 0.85,
+            'fill-opacity': this.node_opacity,
             'rx': 5,
             'ry': 5,
             'x': 0,
