@@ -23,7 +23,7 @@
             'draw': this.canvas.append('g')
         };
 
-        this.connectors = new diagram.connectors(this);
+        this.wire = new diagram.wire(this);
     }
 
     /**

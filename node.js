@@ -163,7 +163,7 @@
                 'fill': 'white'
             });
             
-            this.diagram.connectors.register('input', cn, this);
+            this.diagram.wire.registerConnector('input', cn, this);
             
             this.node.append('text').text(connector.label).attr({
                 'alignment-baseline': 'middle',
@@ -186,7 +186,7 @@
                 'cursor': 'crosshair'
             });
             
-            this.diagram.connectors.register('output', cn, this);
+            this.diagram.wire.registerConnector('output', cn, this);
             
             this.node.append('text').text(connector.label).attr({
                 'alignment-baseline': 'middle',
