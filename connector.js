@@ -6,8 +6,6 @@
  */
 
 ;diagram.connector = (function() {
-    var id = 0;
-    
     /**
      * Constructor.
      *
@@ -26,7 +24,7 @@
         this.cn = null;
         
         if (!('id' in this.data)) {
-            this.data.id = 'cn-' + (++id);
+            this.data.id = node.getId() + '-' + this.data.name;
         }
         if (!('scope' in this.data)) {
             this.data.scope = '';
