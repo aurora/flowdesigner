@@ -127,8 +127,6 @@
         var node = new node_types[data.node](this, data);
 
         this.nodes.push(node);
-
-        node.render(this.getLayer('nodes'));
     }
 
     /**
@@ -149,6 +147,18 @@
 
             return ret;
         });
+    }
+
+    /**
+     * Render diagram.
+     */
+    diagram.prototype.render = function()
+    {
+        var layer = this.getLayer('nodes');
+
+        this.nodes.forEach(function(node) {
+            node.render(layer);
+        }, this);
     }
 
     return diagram;

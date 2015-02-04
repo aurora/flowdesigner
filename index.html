@@ -25,7 +25,7 @@
         d.addScope('video', {
             'color': '#aaaa00'
         });
-        
+
         d.addNodes([
             {
                 'x': 10,
@@ -49,12 +49,13 @@
                 'label': 'Node #3'
             }
         ]);
-        
+        d.render();
+
         // d.importWires([
         //     {'source': 'cn-3', 'target': 'cn-5'},
         //     {'source': 'cn-12', 'target': 'cn-6'}
         // ]);
-        
+
         function ex() {
             console.log(d.exportNodes());
             console.log(d.exportWires());
