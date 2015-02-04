@@ -43,9 +43,13 @@
     /**
      * Remove connection.
      */
-    connector.prototype.removeConnection = function()
+    connector.prototype.removeConnection = function(target)
     {
+        var id = target.getId();
         
+        if (id in this.connections) {
+            delete this.connections[id];
+        }
     }
     
     /**

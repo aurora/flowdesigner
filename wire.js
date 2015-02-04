@@ -41,6 +41,29 @@
         
         source.addConnection(target);
         target.addConnection(source);
+        
+        this.wires[target.getId()] = wire;
+        this.wires[source.getId()] = wire;
+    }
+
+    /**
+     * Redraw wires.
+     *
+     * @param   array           ids             Array of connector IDs.
+     */
+    wire.prototype.redrawWires = function(ids)
+    {
+        ids.forEach(function(id) {
+            if (id in this.wires) {
+                var xy = this.getConnectorCenter(this.registry[id].cn.node());
+
+                if (this.registry[id].getType() == 'output') {
+                    this.wires[id].attr({'x1': xy.x, 'y1': xy.y});
+                } else {
+                    this.wires[id].attr({'x2': xy.x, 'y2': xy.y});
+                }
+            }
+        }, this);
     }
 
     /**
