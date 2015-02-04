@@ -47,7 +47,7 @@
     {
         return (name in this.scopes);
     }
-    
+
     /**
      * Return scope settings.
      *
@@ -107,7 +107,7 @@
 
     /**
      * Add multiple nodes.
-     * 
+     *
      * @param   array       nodes               Array of nodes.
      */
     diagram.prototype.addNodes = function(nodes)
@@ -130,6 +130,26 @@
 
         node.render(this.getLayer('nodes'));
     }
-    
+
+    /**
+     * Remove node of the specified ID.
+     *
+     * @param   string      id                  ID of node to remove.
+     */
+    diagram.prototype.removeNode = function(id)
+    {
+        this.nodes = this.nodes.filter(function(node) {
+            var ret = true;
+
+            if (node.getId() == id) {
+                node.destroy();
+
+                ret = false;
+            }
+
+            return ret;
+        });
+    }
+
     return diagram;
 })();
