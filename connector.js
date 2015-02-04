@@ -6,6 +6,8 @@
  */
 
 ;diagram.connector = (function() {
+    var id = 0;
+    
     /**
      * Constructor.
      *
@@ -17,11 +19,55 @@
     {
         this.type = type;
         this.node = node;
-        this.data = data;
+        this.data = Object.create(data || {});
+
+        this.connections = {};
 
         this.cn = null;
+        
+        if (!('id' in this.data)) {
+            this.data.id = 'cn-' + (++id);
+        }
     }
     
+    /**
+     * Add a connection to an other connector.
+     *
+     * @param   diagram.connector       target          Target connector.
+     */
+    connector.prototype.addConnection = function(target)
+    {
+        this.connections[target.getId()] = target;
+    }
+  
+    /**
+     * Remove connection.
+     */
+    connector.prototype.removeConnection = function()
+    {
+        
+    }
+    
+    /**
+     * Return ID of connector.
+     *
+     * @return  string                          ID of connector.
+     */
+    connector.prototype.getId = function()
+    {
+        return this.data.id;
+    }
+
+    /**
+     * Return node the connector belongs to.
+     *
+     * @return  diagram.node                    Node.
+     */
+    connector.prototype.getNode = function()
+    {
+        return this.node;
+    }
+
     /**
      * Render connector.
      *
@@ -115,7 +161,5 @@
     {
     }
 
-    
-    
     return connector;
 })();

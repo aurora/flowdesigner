@@ -32,7 +32,7 @@
     {
         this.diagram = dia;
     
-        this.data = data || {};
+        this.data = Object.create(data || {});
         this.node = null;
         
         this.registry = [];
@@ -128,6 +128,8 @@
                 me.data.y += d3.event.dy;
 
                 d3.select(this).attr('transform', 'translate(' + me.data.x + ',' + me.data.y + ')');
+                
+                me.diagram.wire.redrawWires(me.registry);
             },
             function(d) {
                 console.log('dropped', d);
