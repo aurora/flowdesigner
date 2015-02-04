@@ -21,6 +21,10 @@ var node_types = {};
         {'name': 'in-2', 'label': 'Control', 'scope': 'video'}
     ];
     
+    node.prototype.node_output = [
+        {'name': 'out1-1', 'label': 'Image', 'scope': 'image'}
+    ];
+    
     node_types.node_test = node;
 })();
 

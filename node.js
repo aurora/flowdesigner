@@ -31,6 +31,7 @@
         this.diagram = dia;
     
         this.data = data;
+        this.node = null;
     }
 
     /**
@@ -62,6 +63,13 @@
     node.prototype.node_height = 40;
 
     /**
+     * Line height for title and connectors in node.
+     *
+     * @type    int
+     */
+    node.prototype.node_line_height = 15;
+
+    /**
      * Default node color.
      *
      * @type    string
@@ -76,6 +84,14 @@
     node.prototype.connector_radius = 5;
 
     /**
+     * Destroy node.
+     */
+    node.prototype.destroy = function()
+    {
+        // remove wires between this and other nodes, unregister connectors, remove SVG nodes
+    }
+
+    /**
      * Render node.
      *
      * @param   SVGNode         parent              Parent node.
@@ -86,7 +102,7 @@
         var cn = Math.max(this.node_input.length, this.node_output.length);
         var me = this;
 
-        var node = parent.data([{'x': this.data.x, 'y': this.data.y}]).append('g').attr('transform', function(d) {
+        this.node = parent.data([{'x': this.data.x, 'y': this.data.y}]).append('g').attr('transform', function(d) {
             return "translate(" + d.x + "," + d.y + ")";
         }).attr('cursor', 'move').call(onDragDrop(
             function(d) {
@@ -100,9 +116,9 @@
             }
         ));
 
-        node.append('rect').attr({
+        this.node.append('rect').attr({
             'width': this.node_width,
-            'height': this.node_height + cn * 15,
+            'height': this.node_height + cn * this.node_line_height,
             'stroke': 'black',
             'fill': this.node_color,
             'fill-opacity': 0.85,
@@ -112,7 +128,7 @@
             'y': 0
         });
 
-        node.append('text').text(this.data.label).attr({
+        this.node.append('text').text(this.data.label).attr({
             'alignment-baseline': 'hanging',
             'stroke': 'none',
             'fill': 'white',
@@ -121,17 +137,50 @@
         });
 
         // render input connectors
-        
-        
-        // this.input.forEach(function(connector, idx) {
-        //     connector.render(node, 10, 30 + (idx * 17));
-        // }, this);
+        this.node_input.forEach(function(connector, idx) {
+            var cn = this.node.data([{'x': 10, 'y': this.node_height + idx * this.node_line_height}]).append('circle').attr({
+                'cx': function(d) { return d.x; },
+                'cy': function(d) { return d.y; },
+                'r': 6,
+                'stroke': 'black',
+                'stroke-width': 2,
+                'fill': 'white'
+            });
+            
+            this.diagram.connectors.register('input', cn, this);
+            
+            this.node.append('text').text(connector.label).attr({
+                'alignment-baseline': 'middle',
+                'stroke': 'none',
+                'fill': 'white',
+                'x': 20,
+                'y': this.node_height + idx * this.node_line_height + 2
+            });
+        }, this);
         
         // render output connectors
-        
-        // this.output.forEach(function(connector, idx) {
-        //     connector.render(node, 10, 30 + (idx * 17));
-        // }, this);
+        this.node_output.forEach(function(connector, idx) {
+            var cn = this.node.data([{'x': this.node_width - 10, 'y': this.node_height + idx * this.node_line_height}]).append('circle').attr({
+                'cx': function(d) { return d.x; },
+                'cy': function(d) { return d.y; },
+                'r': 6,
+                'stroke': 'black',
+                'stroke-width': 2,
+                'fill': 'white',
+                'cursor': 'crosshair'
+            });
+            
+            this.diagram.connectors.register('output', cn, this);
+            
+            this.node.append('text').text(connector.label).attr({
+                'alignment-baseline': 'middle',
+                'text-anchor': 'end',
+                'stroke': 'none',
+                'fill': 'white',
+                'x': this.node_width - 20,
+                'y': this.node_height + idx * this.node_line_height + 2
+            });
+        }, this);
     }
     
     return node;
