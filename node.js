@@ -147,25 +147,20 @@
     }
 
     /**
-     * Return width of node.
+     * Return rectangle of node (x, y, width, height).
      *
-     * @return  int                                 Width of node.
+     * @return  object                              Rectangle.
      */
-    node.prototype.getWidth = function()
-    {
-        return this.node_width;
-    }
-
-    /**
-     * Return height of node.
-     *
-     * @return  int                                 Height of node.
-     */
-    node.prototype.getHeight = function()
+    node.prototype.getRect = function()
     {
         var cn = Math.max(this.node_input.length, this.node_output.length);
         
-        return this.node_height + cn * this.node_line_height;
+        return {
+            'x':      (isNaN(this.data.x) ? null : this.data.x),
+            'y':      (isNaN(this.data.y) ? null : this.data.y),
+            'width':  this.node_width,
+            'height': this.node_height + cn * this.node_line_height
+        };
     }
 
     /**
@@ -179,6 +174,9 @@
         if (typeof pos !== 'undefined' && 'x' in pos && 'y' in pos) {
             this.data.x = pos.x;
             this.data.y = pos.y;
+        } else if (!('y' in this.data && 'x' in this.data)) {
+            this.data.x = 0;
+            this.data.y = 0;
         }
         
         // render node

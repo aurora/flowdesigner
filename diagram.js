@@ -146,6 +146,19 @@
      */
     diagram.prototype.render = function(wires)
     {
+        // determine if dagre should be used for layouting
+        var use_dagre = false;
+        
+        if (typeof dagre !== 'undefined') {
+            for (var i = 0, rect = null, cnt = this.nodes.length; i < cnt; ++i) {
+                rect = this.nodes[i].getRect();
+            
+                if ((use_dagre = (rect.x === null || rect.y === null))) {
+                    break;
+                }
+            }
+        }
+        
         // calculate graph layout using dagre library
         var g = new dagre.graphlib.Graph();
 
@@ -153,7 +166,9 @@
         g.setDefaultEdgeLabel(function() { return {}; });
 
         this.nodes.forEach(function(node) {
-            g.setNode(node.getId(), {'width': node.getWidth(), 'height': node.getHeight()});
+            var rect = node.getRect();
+            
+            g.setNode(node.getId(), {'width': rect.width, 'height': rect.height});
         });
 
         wires.forEach(function(wire) {
