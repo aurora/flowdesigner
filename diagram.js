@@ -175,38 +175,43 @@
             }
         }
         
-        // calculate graph layout using dagre library
-        var g = new dagre.graphlib.Graph();
-
-        g.setGraph({'rankdir': 'LR'});
-        g.setDefaultEdgeLabel(function() { return {}; });
-
-        this.nodes.forEach(function(node) {
-            var rect = node.getRect();
-            
-            g.setNode(node.getId(), {'width': rect.width, 'height': rect.height});
-        });
-
-        wires.forEach(function(wire) {
-            var source = this.wire.registry[wire.source];
-            var target = this.wire.registry[wire.target];
-
-            console.log(source, target);
-
-            g.setEdge(source.getNode().getId(), target.getNode().getId());
-        }, this);
-
-        dagre.layout(g);
-    
-        // render nodes and wires
         var layer = this.getLayer('nodes');
 
-        this.nodes.forEach(function(node) {
-            var rect = g.node(node.getId());
-            
-            node.render(layer, {'x': rect.x, 'y': rect.y});
-        }, this);
+        if (use_dagre) {
+            // render nodes with calculated graph layout using dagre library
+            var g = new dagre.graphlib.Graph();
 
+            g.setGraph({'rankdir': 'LR'});
+            g.setDefaultEdgeLabel(function() { return {}; });
+
+            this.nodes.forEach(function(node) {
+                var rect = node.getRect();
+            
+                g.setNode(node.getId(), {'width': rect.width, 'height': rect.height});
+            });
+
+            wires.forEach(function(wire) {
+                var source = this.wire.registry[wire.source];
+                var target = this.wire.registry[wire.target];
+
+                g.setEdge(source.getNode().getId(), target.getNode().getId());
+            }, this);
+
+            dagre.layout(g);
+
+            this.nodes.forEach(function(node) {
+                var rect = g.node(node.getId());
+            
+                node.render(layer, {'x': rect.x, 'y': rect.y});
+            }, this);
+        } else {
+            // render without using dagre
+            this.nodes.forEach(function(node) {
+                node.render(layer);
+            });
+        }
+    
+        // render wires
         wires.forEach(function(wire) {
             this.wire.addWire(wire.source, wire.target);
         }, this);
