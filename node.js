@@ -7,7 +7,7 @@
 
 ;diagram.node = (function() {
     var id = 0;
-    
+
     /**
      * Node drag and drop.
      */
@@ -21,7 +21,7 @@
 
         return drag;
     }
-    
+
     /**
      * Constructor.
      *
@@ -31,12 +31,12 @@
     function node(dia, data)
     {
         this.diagram = dia;
-    
+
         this.data = Object.create(data || {});
         this.node = null;
-        
+
         this.registry = [];
-        
+
         if (!('id' in this.data)) {
             this.data.id = 'node-' + (++id);
         }
@@ -103,7 +103,13 @@
      */
     node.prototype.destroy = function()
     {
-        // remove wires between this and other nodes, unregister connectors, remove SVG nodes
+        this.registry = this.registry.filter(function(id) {
+            this.diagram.wire.unregisterConnector(id);
+
+            return false;
+        }, this);
+
+        this.node.remove();
     }
 
     /**
@@ -145,7 +151,7 @@
                 me.data.y += d3.event.dy;
 
                 d3.select(this).attr('transform', 'translate(' + me.data.x + ',' + me.data.y + ')');
-                
+
                 me.diagram.wire.redrawWires(me.registry);
             },
             function(d) {
@@ -172,6 +178,22 @@
             'y': 5
         });
 
+        this.node.append('text').text('\u00D7').attr({
+            'alignment-baseline': 'hanging',
+            'text-anchor': 'end',
+            'fill': 'white',
+            'x': this.node_width - 5,
+            'y': 5,
+            'opacity': 0.5,
+            'cursor': 'pointer'
+        }).on('mouseover', function(d) {
+            d3.select(this).attr({'opacity': 1});
+        }).on('mouseout', function(d) {
+            d3.select(this).attr({'opacity': 0.5});
+        }).on('click', function(d) {
+            me.diagram.removeNode(me.data.id);
+        });
+
         // render input connectors
         this.node_input.forEach(function(data, idx) {
             var connector = new diagram.connector('input', this, data);
@@ -179,7 +201,7 @@
 
             this.registry.push(this.diagram.wire.registerConnector(connector));
         }, this);
-        
+
         // render output connectors
         this.node_output.forEach(function(data, idx) {
             var connector = new diagram.connector('output', this, data);
@@ -188,6 +210,6 @@
             this.registry.push(this.diagram.wire.registerConnector(connector));
         }, this);
     }
-    
+
     return node;
 })();
