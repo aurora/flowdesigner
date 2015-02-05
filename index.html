@@ -49,9 +49,10 @@
             [{"node":"node_test","name":"node-1","label":"Node #1","id":"node-1","x":125,"y":35},{"node":"node_test","name":"node-2","label":"Node #2","id":"node-2","x":426,"y":142},{"node":"node_test2","name":"node-3","label":"Node #3","id":"node-3","x":725,"y":35}]
         );
         
-        d.render(
+        d.addWires(
 [{"source":"node-1-out1-1","target":"node-2-in-1"},{"source":"node-1-out1-2","target":"node-2-in-2"},{"source":"node-1-out1-1","target":"node-3-in-1"},{"source":"node-2-out1-1","target":"node-3-in-2"}]
         );
+        d.render();
         
         function ex() {
             console.log(JSON.stringify(d.exportNodes()));

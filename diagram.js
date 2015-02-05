@@ -15,6 +15,7 @@
     {
         this.canvas = d3.select(canvas);
         this.nodes = [];
+        this.wires = [];
         this.scopes = {};
 
         this.layers = {
@@ -136,6 +137,26 @@
     }
 
     /**
+     * Add multiple wires.
+     *
+     * @param   array       wires               Array of wires.
+     */
+    diagram.prototype.addWires = function(wires)
+    {
+        this.wires = this.wires.concat(wires);
+    }
+
+    /**
+     * Add a single wire to diagram.
+     *
+     * @param   object      wire                Wire to add.
+     */
+    diagram.prototype.addWire = function(wire)
+    {
+        this.wires.push(wire);
+    }
+
+    /**
      * Remove node of the specified ID.
      *
      * @param   string      id                  ID of node to remove.
@@ -157,10 +178,8 @@
 
     /**
      * Render diagram and wire all nodes as specified.
-     *
-     * @param   array       wires               Wires to build.
      */
-    diagram.prototype.render = function(wires)
+    diagram.prototype.render = function()
     {
         // determine if dagre should be used for layouting
         var use_dagre = false;
@@ -190,7 +209,7 @@
                 g.setNode(node.getId(), {'width': rect.width, 'height': rect.height});
             });
 
-            wires.forEach(function(wire) {
+            this.wires.forEach(function(wire) {
                 var source = this.wire.registry[wire.source];
                 var target = this.wire.registry[wire.target];
 
@@ -212,7 +231,7 @@
         }
     
         // render wires
-        wires.forEach(function(wire) {
+        this.wires.forEach(function(wire) {
             this.wire.addWire(wire.source, wire.target);
         }, this);
     }
