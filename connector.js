@@ -17,7 +17,7 @@
     {
         this.type = type;
         this.node = node;
-        this.data = Object.create(data || {});
+        this.data = this.node.diagram.extend({}, data || {});
 
         this.connections = {};
 

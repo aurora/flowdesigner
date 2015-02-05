@@ -32,7 +32,7 @@
     {
         this.diagram = dia;
 
-        this.data = Object.create(data || {});
+        this.data = this.diagram.extend({}, data);
         this.node = null;
 
         this.registry = [];
@@ -143,7 +143,7 @@
      */
     node.prototype.getData = function()
     {
-        return Object.create(this.data);
+        return this.diagram.extend({}, this.data);
     }
 
     /**
