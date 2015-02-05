@@ -40,6 +40,20 @@
         if (!('id' in this.data)) {
             this.data.id = 'node-' + (++id);
         }
+
+        // register input connectors
+        this.node_input.forEach(function(data, idx) {
+            var connector = new diagram.connector('input', this, data);
+
+            this.registry.push(this.diagram.wire.registerConnector(connector));
+        }, this);
+
+        // register output connectors
+        this.node_output.forEach(function(data, idx) {
+            var connector = new diagram.connector('output', this, data);
+
+            this.registry.push(this.diagram.wire.registerConnector(connector));
+        }, this);
     }
 
     /**
@@ -133,12 +147,40 @@
     }
 
     /**
+     * Return width of node.
+     *
+     * @return  int                                 Width of node.
+     */
+    node.prototype.getWidth = function()
+    {
+        return this.node_width;
+    }
+
+    /**
+     * Return height of node.
+     *
+     * @return  int                                 Height of node.
+     */
+    node.prototype.getHeight = function()
+    {
+        var cn = Math.max(this.node_input.length, this.node_output.length);
+        
+        return this.node_height + cn * this.node_line_height;
+    }
+
+    /**
      * Render node.
      *
      * @param   SVGNode         parent              Parent node.
+     * @param   object          pos                 Optional {x: x, y: y} pair to use for rendering instead of in data provided x,y values.
      */
-    node.prototype.render = function(parent)
+    node.prototype.render = function(parent, pos)
     {
+        if (typeof pos !== 'undefined' && 'x' in pos && 'y' in pos) {
+            this.data.x = pos.x;
+            this.data.y = pos.y;
+        }
+        
         // render node
         var cn = Math.max(this.node_input.length, this.node_output.length);
         var me = this;
@@ -194,20 +236,19 @@
             me.diagram.removeNode(me.data.id);
         });
 
-        // render input connectors
-        this.node_input.forEach(function(data, idx) {
-            var connector = new diagram.connector('input', this, data);
-            connector.render(this.node, 10, this.node_height + idx * this.node_line_height);
-
-            this.registry.push(this.diagram.wire.registerConnector(connector));
-        }, this);
-
-        // render output connectors
-        this.node_output.forEach(function(data, idx) {
-            var connector = new diagram.connector('output', this, data);
-            connector.render(this.node, this.node_width - 10, this.node_height + idx * this.node_line_height);
-
-            this.registry.push(this.diagram.wire.registerConnector(connector));
+        // render connectors
+        var idx = {'input': 0, 'output': 0};
+        
+        this.registry.forEach(function(id) {
+            var connector = this.diagram.wire.getConnector(id);
+            
+            if (connector.getType() == 'input') {
+                connector.render(this.node, 10, this.node_height + idx.input * this.node_line_height);
+                ++idx.input;
+            } else {
+                connector.render(this.node, this.node_width - 10, this.node_height + idx.output * this.node_line_height);
+                ++idx.output;
+            }
         }, this);
     }
 

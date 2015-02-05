@@ -1,5 +1,6 @@
 <html>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+    <script type="text/javascript" src="http://cpettitt.github.io/project/dagre/latest/dagre.min.js"></script>
     <script type="text/javascript" src="d3util.js"></script>
     <script type="text/javascript" src="diagram.js"></script>
     <script type="text/javascript" src="node.js"></script>
@@ -50,16 +51,13 @@
                 'label': 'Node #3'
             }
         ]);
-        d.render();
-
-        // d.importWires([
-        //     {'source': 'cn-3', 'target': 'cn-5'},
-        //     {'source': 'cn-12', 'target': 'cn-6'}
-        // ]);
-
+        d.render(
+[{"source":"node-1-out1-1","target":"node-2-in-1"},{"source":"node-1-out1-2","target":"node-2-in-2"},{"source":"node-1-out1-1","target":"node-3-in-1"},{"source":"node-2-out1-1","target":"node-3-in-2"}]
+        );
+        
         function ex() {
-            console.log(d.exportNodes());
-            console.log(d.exportWires());
+            console.log(JSON.stringify(d.exportNodes()));
+            console.log(JSON.stringify(d.exportWires()));
         }
         </script>
         <input type="button" value="Export" onclick="ex();" />

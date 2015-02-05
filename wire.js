@@ -86,18 +86,6 @@
     }
 
     /**
-     * Import wires.
-     *
-     * @return  array                           Export all wires.
-     */
-    wire.prototype.importWires = function(wires)
-    {
-        wires.forEach(function(wire) {
-            this.addWire(wire.source, wire.target);
-        }, this);
-    }
-
-    /**
      * Return wires.
      *
      * @return  array                           Export all wires.
@@ -158,6 +146,18 @@
         var bbox = node.getBBox();
 
         return convertCoords(bbox.x + (bbox.width / 2), bbox.y + (bbox.height / 2));
+    }
+
+    /**
+     * Get registered connector by registry id.
+     *
+     * @param   string              id              Registry key of connector.
+     */
+    wire.prototype.getConnector = function(id)
+    {
+        return (id in this.registry
+                ? this.registry[id]
+                : undefined);
     }
 
     /**

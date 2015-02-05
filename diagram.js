@@ -74,16 +74,6 @@
     }
 
     /**
-     * Import wires.
-     *
-     * @param   array       wires               Wires to build.
-     */
-    diagram.prototype.importWires = function(wires)
-    {
-        this.wire.importWires(wires);
-    }
-
-    /**
      * Return wires.
      *
      * @return  array                           Array ofwires.
@@ -150,14 +140,44 @@
     }
 
     /**
-     * Render diagram.
+     * Render diagram and wire all nodes as specified.
+     *
+     * @param   array       wires               Wires to build.
      */
-    diagram.prototype.render = function()
+    diagram.prototype.render = function(wires)
     {
+        // calculate graph layout using dagre library
+        var g = new dagre.graphlib.Graph();
+
+        g.setGraph({'rankdir': 'LR'});
+        g.setDefaultEdgeLabel(function() { return {}; });
+
+        this.nodes.forEach(function(node) {
+            g.setNode(node.getId(), {'width': node.getWidth(), 'height': node.getHeight()});
+        });
+
+        wires.forEach(function(wire) {
+            var source = this.wire.registry[wire.source];
+            var target = this.wire.registry[wire.target];
+
+            console.log(source, target);
+
+            g.setEdge(source.getNode().getId(), target.getNode().getId());
+        }, this);
+
+        dagre.layout(g);
+    
+        // render nodes and wires
         var layer = this.getLayer('nodes');
 
         this.nodes.forEach(function(node) {
-            node.render(layer);
+            var rect = g.node(node.getId());
+            
+            node.render(layer, {'x': rect.x, 'y': rect.y});
+        }, this);
+
+        wires.forEach(function(wire) {
+            this.wire.addWire(wire.source, wire.target);
         }, this);
     }
 
