@@ -18,6 +18,13 @@ if (typeof node_types == 'undefined') {
     node.prototype = Object.create(diagram.node.prototype);
     node.prototype.constructor = node;
 
+    node.prototype.onClick = function(d) {
+        console.log('click', d);
+    }
+    node.prototype.onDblClick = function(d) {
+        console.log('dblclick', d);
+    }
+
     node.prototype.node_input = [
         {'name': 'in-1', 'label': 'Image', 'scope': 'image'},
         {'name': 'in-2', 'label': 'Control', 'scope': 'ctrl'}
