@@ -185,7 +185,11 @@
 
         this.node = parent.data([{'x': this.data.x, 'y': this.data.y}]).append('g').attr('transform', function(d) {
             return "translate(" + d.x + "," + d.y + ")";
-        }).attr('cursor', 'move').call(onDragDrop(
+        }).attr('cursor', 'move').on('click', function(d) {
+            me.onClick(d);
+        }).on('dblclick', function(d) {
+            me.onDblClick(d);
+        }).call(onDragDrop(
             function(d) {
                 me.data.x += d3.event.dx;
                 me.data.y += d3.event.dy;
@@ -248,6 +252,14 @@
                 ++idx.output;
             }
         }, this);
+    }
+
+    /*
+     * Event handlers to be overwritten by child classes.
+     */
+    node.prototype.onClick = function(d) {
+    }
+    node.prototype.onDblClick = function(d) {
     }
 
     return node;
