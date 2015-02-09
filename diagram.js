@@ -10,10 +10,12 @@
      * Constructor.
      *
      * @param   mixed       canvas              Canvas selector.
+     * @param   object      options             Optional options.
      */
-    function diagram(canvas)
+    function diagram(canvas, options)
     {
         this.canvas = d3.select(canvas);
+        this.options = this.extend({'raster': 10}, options || {});
         this.nodes = [];
         this.wires = [];
         this.scopes = {};

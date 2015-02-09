@@ -194,7 +194,15 @@
                 me.data.x += d3.event.dx;
                 me.data.y += d3.event.dy;
 
-                d3.select(this).attr('transform', 'translate(' + me.data.x + ',' + me.data.y + ')');
+                if (me.diagram.options.raster > 0) {
+                    d.x = Math.round(me.data.x / me.diagram.options.raster) * me.diagram.options.raster;
+                    d.y = Math.round(me.data.y / me.diagram.options.raster) * me.diagram.options.raster;
+                } else {
+                    d.x = me.data.x;
+                    d.y = me.data.y;
+                }
+
+                d3.select(this).attr('transform', 'translate(' + d.x + ',' + d.y + ')');
 
                 me.diagram.wire.redrawWires(me.registry);
             },
