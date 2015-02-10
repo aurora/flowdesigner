@@ -9,20 +9,6 @@
     var id = 0;
 
     /**
-     * Node drag and drop.
-     */
-    function onDragDrop(dragHandler, dropHandler)
-    {
-        var drag = d3.behavior.drag();
-
-        drag.on('dragstart', function(d) {
-            d3.select(this).moveToFront();
-        }).on('drag', dragHandler).on('dragend', dropHandler);
-
-        return drag;
-    }
-
-    /**
      * Constructor.
      *
      * @param   diagram         diagram             Diagram instance.
