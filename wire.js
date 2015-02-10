@@ -195,7 +195,7 @@
             if (type == 'output') {
                 // source target of a wire
                 connector.onDragStart = function(delta, event) {
-                    var xy = me.getConnectorCenter(event.target.instance);
+                    var xy = me.getConnectorCenter(me.registry[key].cn);
 
                     wire = me.diagram.getLayer('draw').line(xy.x, xy.y, xy.x, xy.y).attr({
                         'stroke-width': 2,
@@ -206,9 +206,10 @@
                 }
                 connector.onDrag = function(delta, event) {
                     if (wire !== null && end === null) {
-                        var txy = calcLine(wire.x(), wire.y(), event.x, event.y);
-
-                        wire.attr({'x2': txy.x, 'y2': txy.y});
+                        var xy = me.getConnectorCenter(me.registry[start].cn);
+                        var txy = calcLine(xy.x, xy.y, xy.x + delta.x, xy.y + delta.y);
+                        
+                        wire.plot(xy.x, xy.y, txy.x, txy.y);
                     }
                 };
                 connector.onDragEnd = function(d) {
@@ -236,11 +237,11 @@
                             // ... but only if connection is allowed
                             end = key;
 
-                            var xy = me.getConnectorCenter(connector.cn);
+                            var sxy = me.getConnectorCenter(me.registry[start].cn);
+                            var exy = me.getConnectorCenter(connector.cn);
+                            var txy = calcLine(sxy.x, sxy.y, exy.x, exy.y);
 
-                            var txy = calcLine(wire.x(), wire.y(), xy.x, xy.y);
-
-                            wire.attr({'x2': txy.x, 'y2': txy.y});
+                            wire.plot(sxy.x, sxy.y, txy.x, txy.y);
                         }
                     }
                 }
