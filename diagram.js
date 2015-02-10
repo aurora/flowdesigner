@@ -14,13 +14,11 @@
      */
     function diagram(canvas, options)
     {
-        this.canvas = SVG('canvas').size(1000, 500);
+        this.canvas = SVG('canvas').size(1000, 500).group();
         this.options = this.extend({'raster': 10}, options || {});
         this.nodes = [];
         this.wires = [];
         this.scopes = {};
-
-        console.log(this.canvas);
 
         this.layers = {
             'wires': this.canvas.group(),
