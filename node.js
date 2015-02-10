@@ -206,15 +206,14 @@
             me.data.x += delta.x;
             me.data.y += delta.y;
 
-            // var x, y;
-            //
-            // if (me.diagram.options.raster > 0) {
-            //     x = Math.round(me.data.x / me.diagram.options.raster) * me.diagram.options.raster;
-            //     y = Math.round(me.data.y / me.diagram.options.raster) * me.diagram.options.raster;
-            // } else {
-            //     x = me.data.x;
-            //     y = me.data.y;
-            // }
+            if (me.diagram.options.raster > 0) {
+                var bbox = this.bbox();
+            
+                var x = Math.round(bbox.x / me.diagram.options.raster) * me.diagram.options.raster;
+                var y = Math.round(bbox.y / me.diagram.options.raster) * me.diagram.options.raster;
+                
+                this.transform({'x': x, 'y': y});
+            }
 
             me.diagram.wire.redrawWires(me.registry);
         }
