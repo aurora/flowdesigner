@@ -145,27 +145,31 @@
                 'text-anchor': 'end'
             });
 
-            // this.cn.call((function() {
-            //     var drag = d3.behavior.drag();
-            //
-            //     drag.on('dragstart', function(d) {
-            //         d3.event.sourceEvent.stopPropagation();
-            //
-            //         me.onDragStart(d);
-            //     }).on('drag', function(d) {
-            //         me.onDrag(d);
-            //     }).on('dragend', function(d) {
-            //         me.onDragEnd(d);
-            //     });
-            //
-            //     return drag;
-            // })());
+            this.cn.draggable(function() {
+                return {'x': false, 'y': false};
+            });
+            this.cn.dragstart = function(delta, event){
+                event.stopPropagation();
+                
+                me.onDragStart(delta, event);
+            };
+            this.cn.dragmove = function(delta, event){
+                event.stopPropagation();
+                
+                me.onDrag(delta, event);
+            };
+            this.cn.dragend = function(delta, event){
+                event.stopPropagation();
+                
+                me.onDragEnd(delta, event);
+            };
         } else {
-            // this.cn.on('mouseover', function() {
-            //     me.onMouseOver();
-            // }).on('mouseout', function() {
-            //     me.onMouseOut()
-            // });
+            this.cn.mouseover(function(event) {
+                me.onMouseOver(event);
+            });
+            this.cn.mouseout(function(event) {
+                me.onMouseOut(event);
+            });
         }
     }
     
@@ -182,23 +186,23 @@
     /*
      * Events.
      */
-    connector.prototype.onDragStart = function(d)
+    connector.prototype.onDragStart = function(delta, event)
     {
     }
     
-    connector.prototype.onDrag = function(d)
+    connector.prototype.onDrag = function(delta, event)
     {
     }
 
-    connector.prototype.onDragEnd = function(d)
+    connector.prototype.onDragEnd = function(delta, event)
     {
     }
 
-    connector.prototype.onMouseOver = function(d)
+    connector.prototype.onMouseOver = function(event)
     {
     }
 
-    connector.prototype.onMouseOut = function(d)
+    connector.prototype.onMouseOut = function(event)
     {
     }
 

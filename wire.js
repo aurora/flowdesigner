@@ -113,8 +113,8 @@
                 var key = [source.getId(), target.getId()].sort().join('-');
 
                 if (key in this.wires) {
-                    var sxy = this.getConnectorCenter(this.registry[id].cn.node());
-                    var txy = this.getConnectorCenter(target.cn.node());
+                    var sxy = this.getConnectorCenter(this.registry[id].cn);
+                    var txy = this.getConnectorCenter(target.cn);
 
                     this.wires[key].wire.attr({'d': calcPath(sxy.x, sxy.y, txy.x, txy.y)});
                 }
@@ -194,26 +194,19 @@
 
             if (type == 'output') {
                 // source target of a wire
-                connector.onDragStart = function(d) {
-                    var xy = me.getConnectorCenter(d3.event.sourceEvent.target);
+                connector.onDragStart = function(delta, event) {
+                    var xy = me.getConnectorCenter(event.target.instance);
 
-                    wire = me.diagram.getLayer('draw').append('line').attr({
-                        'x1': xy.x,
-                        'y1': xy.y,
-                        'x2': xy.x,
-                        'y2': xy.y,
+                    wire = me.diagram.getLayer('draw').line(xy.x, xy.y, xy.x, xy.y).attr({
                         'stroke-width': 2,
                         'stroke': 'red'
                     });
 
                     start = key;
                 }
-                connector.onDrag = function(d) {
+                connector.onDrag = function(delta, event) {
                     if (wire !== null && end === null) {
-                        var sxy = {'x': parseInt(wire.attr('x1'), 10), 'y': parseInt(wire.attr('y1'), 10)};
-                        var mxy = d3.mouse(me.diagram.getLayer().node());
-
-                        var txy = calcLine(sxy.x, sxy.y, mxy[0], mxy[1]);
+                        var txy = calcLine(wire.x(), wire.y(), event.clientX, event.clientY);
 
                         wire.attr({'x2': txy.x, 'y2': txy.y});
                     }
@@ -234,27 +227,26 @@
                 };
             } else {
                 // drop target for a wire
-                connector.onMouseOver = function() {
-                    d3.event.stopPropagation();
-
+                connector.onMouseOver = function(event) {
+                    event.stopPropagation();
+                    
                     if (wire !== null) {
                         // snap wire ...
                         if (connector.isAllowed(me.registry[start])) {
                             // ... but only if connection is allowed
                             end = key;
 
-                            var sxy = {'x': parseInt(wire.attr('x1'), 10), 'y': parseInt(wire.attr('y1'), 10)};
-                            var xy = me.getConnectorCenter(d3.event.target);
+                            var xy = me.getConnectorCenter(event.target.instance);
 
-                            var txy = calcLine(sxy.x, sxy.y, xy.x, xy.y);
+                            var txy = calcLine(wire.x(), wire.y(), xy.x, xy.y);
 
                             wire.attr({'x2': txy.x, 'y2': txy.y});
                         }
                     }
                 }
-                connector.onMouseOut = function() {
-                    d3.event.stopPropagation();
-
+                connector.onMouseOut = function(event) {
+                    event.stopPropagation();
+                    
                     end = null;
                 };
             }

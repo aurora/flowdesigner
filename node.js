@@ -183,36 +183,48 @@
         var cn = Math.max(this.node_input.length, this.node_output.length);
         var me = this;
 
-        this.node = parent.group().transform({'x': this.data.x, 'y': this.data.y});
-        // }).attr('cursor', 'move').on('click', function(d) {
-        //     me.onClick(d);
-        // }).on('dblclick', function(d) {
-        //     me.onDblClick(d);
-        // }).call(onDragDrop(
-        //     function(d) {
-        //         me.data.x += d3.event.dx;
-        //         me.data.y += d3.event.dy;
-        //
-        //         if (me.diagram.options.raster > 0) {
-        //             d.x = Math.round(me.data.x / me.diagram.options.raster) * me.diagram.options.raster;
-        //             d.y = Math.round(me.data.y / me.diagram.options.raster) * me.diagram.options.raster;
-        //         } else {
-        //             d.x = me.data.x;
-        //             d.y = me.data.y;
-        //         }
-        //
-        //         d3.select(this).attr('transform', 'translate(' + d.x + ',' + d.y + ')');
-        //
-        //         me.diagram.wire.redrawWires(me.registry);
-        //     },
-        //     function(d) {
-        //     }
-        // ));
+        this.node = parent.group().transform({
+            'x': this.data.x,
+            'y': this.data.y
+        }).attr({
+            'cursor': 'move'
+        });
+        
+        this.node.click = function() {
+            me.onClick();
+        }
+        this.node.dblclick = function() {
+            me.onDblClick();
+        }
 
-        this.node.rect(this.node_width, this.node_height + cn * this.node_line_height).radius(5).attr({
+        this.node.draggable();
+        this.node.dragmove = function(delta, event) {
+            me.data.x += delta.x;
+            me.data.y += delta.y;
+
+            // var x, y;
+            //
+            // if (me.diagram.options.raster > 0) {
+            //     x = Math.round(me.data.x / me.diagram.options.raster) * me.diagram.options.raster;
+            //     y = Math.round(me.data.y / me.diagram.options.raster) * me.diagram.options.raster;
+            // } else {
+            //     x = me.data.x;
+            //     y = me.data.y;
+            // }
+
+            me.diagram.wire.redrawWires(me.registry);
+        }
+
+        var rect = this.node.rect(this.node_width, this.node_height + cn * this.node_line_height).radius(5).attr({
             'stroke': 'black',
             'fill': this.node_color,
             'fill-opacity': this.node_opacity
+        });
+        rect.click(function() {
+            me.onClick();
+        });
+        rect.dblclick(function() {
+            me.onDblClick();
         });
 
         this.node.text('').plain(this.data.label).leading(1).transform({'x': 5, 'y': 5}).attr({
@@ -221,19 +233,23 @@
             'fill': 'white'
         });
 
-        this.node.text('').plain('\u00D7').leading(1).transform({'x': this.node_width - 5, 'y': 5}).attr({
+        var bclose = this.node.text('').plain('\u00D7').leading(1).transform({'x': this.node_width - 5, 'y': 5}).attr({
             'alignment-baseline': 'hanging',
             'text-anchor': 'end',
             'fill': 'white',
             'opacity': 0.5,
             'cursor': 'pointer'
-        })/*.on('mouseover', function(d) {
-            d3.select(this).attr({'opacity': 1});
-        }).on('mouseout', function(d) {
-            d3.select(this).attr({'opacity': 0.5});
-        }).on('click', function(d) {
+        });
+        
+        bclose.mouseover(function() {
+            this.attr({'opacity': 1});
+        });
+        bclose.mouseout(function() {
+            this.attr({'opacity': 0.5});
+        });
+        bclose.click(function() {
             me.diagram.removeNode(me.data.id);
-        })*/;
+        });
 
         // render connectors
         var idx = {'input': 0, 'output': 0};
