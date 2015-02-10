@@ -14,11 +14,13 @@
      */
     function diagram(canvas, options)
     {
-        this.canvas = SVG('canvas').size(1000, 500).group();
+        this.canvas = SVG('canvas').size(1000, 500).svg();
         this.options = this.extend({'raster': 10}, options || {});
         this.nodes = [];
         this.wires = [];
         this.scopes = {};
+
+        var background = this.canvas.rect(1000, 500);
 
         this.layers = {
             'wires': this.canvas.group(),
@@ -27,6 +29,21 @@
         };
 
         this.wire = new diagram.wire(this);
+
+        // make diagram draggable
+        var me = this;
+        var txy = {'x': 0, 'y': 0};
+
+        background.draggable(function() {
+            return {'x': false, 'y': false};
+        });    
+        background.dragmove = function(delta, event) {
+            me.canvas.transform({'x': txy.x + delta.x, 'y': txy.y + delta.y});
+        }
+        background.dragend = function(delta, event) {
+            txy.x += delta.x;
+            txy.y += delta.y;
+        }
     }
 
     /**

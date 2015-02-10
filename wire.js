@@ -130,8 +130,10 @@
      */
     wire.prototype.getConnectorCenter = function(node)
     {
-        var rbox = node.rbox();
+        console.log(node.cx(), node.cy());
         
+        var rbox = node.rbox();
+
         return {
             'x': rbox.x + (rbox.width / 2),
             'y': rbox.y + (rbox.height / 2)

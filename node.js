@@ -172,8 +172,6 @@
         this.node = parent.group().transform({
             'x': this.data.x,
             'y': this.data.y
-        }).attr({
-            'cursor': 'move'
         });
         
         this.node.mousedown(function() {
@@ -188,7 +186,12 @@
         }
 
         this.node.draggable();
+        this.node.dragstart = function(delta, event) {
+            event.stopPropagation();
+        }
         this.node.dragmove = function(delta, event) {
+            event.stopPropagation();
+            
             me.data.x += delta.x;
             me.data.y += delta.y;
 
@@ -202,6 +205,9 @@
             }
 
             me.diagram.wire.redrawWires(me.registry);
+        }
+        this.node.dragend = function(delta, event) {
+            event.stopPropagation();
         }
 
         var rect = this.node.rect(this.node_width, this.node_height + cn * this.node_line_height).radius(5).attr({
