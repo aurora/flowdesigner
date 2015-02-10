@@ -14,16 +14,18 @@
      */
     function diagram(canvas, options)
     {
-        this.canvas = d3.select(canvas);
+        this.canvas = SVG('canvas').size(1000, 500);
         this.options = this.extend({'raster': 10}, options || {});
         this.nodes = [];
         this.wires = [];
         this.scopes = {};
 
+        console.log(this.canvas);
+
         this.layers = {
-            'wires': this.canvas.append('g'),
-            'nodes': this.canvas.append('g'),
-            'draw': this.canvas.append('g')
+            'wires': this.canvas.group(),
+            'nodes': this.canvas.group(),
+            'draw': this.canvas.group()
         };
 
         this.wire = new diagram.wire(this);

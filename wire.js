@@ -65,11 +65,10 @@
 
         var scope = source.getScope();
 
-        var sxy = this.getConnectorCenter(source.cn.node());
-        var txy = this.getConnectorCenter(target.cn.node());
+        var sxy = this.getConnectorCenter(source.cn);
+        var txy = this.getConnectorCenter(target.cn);
 
-        var wire = this.diagram.getLayer('wires').append('path').attr({
-            'd': calcPath(sxy.x, sxy.y, txy.x, txy.y),
+        var wire = this.diagram.getLayer('wires').path(calcPath(sxy.x, sxy.y, txy.x, txy.y)).attr({
             'stroke-width': 4,
             'stroke': (this.diagram.hasScope(scope)
                         ? this.diagram.getScope(scope).color
@@ -131,21 +130,12 @@
      */
     wire.prototype.getConnectorCenter = function(node)
     {
-        var me = this;
-
-        function convertCoords(x, y) {
-            var offset = me.diagram.getLayer().node().getBoundingClientRect();
-            var matrix = node.getScreenCTM();
-
-            return {
-                x: (matrix.a * x) + (matrix.c * y) + matrix.e - offset.left,
-                y: (matrix.b * x) + (matrix.d * y) + matrix.f - offset.top
-            };
-        }
-
-        var bbox = node.getBBox();
-
-        return convertCoords(bbox.x + (bbox.width / 2), bbox.y + (bbox.height / 2));
+        var rbox = node.rbox();
+        
+        return {
+            'x': rbox.x + (rbox.width / 2),
+            'y': rbox.y + (rbox.height / 2)
+        };
     }
 
     /**

@@ -118,10 +118,10 @@
     {
         var me = this;
         
-        this.cn = parent.data([{'x': x, 'y': y}]).append('circle').attr({
-            'cx': function(d) { return d.x; },
-            'cy': function(d) { return d.y; },
-            'r': 6,
+        // this.cn = parent.circle().radius(6).transform({'x': x, 'y': y}).attr({
+        this.cn = parent.circle().radius(6).attr({
+            'cx': x,
+            'cy': y,
             'stroke': 'black',
             'stroke-width': 2,
             'fill': (this.node.diagram.hasScope(this.data.scope)
@@ -129,7 +129,7 @@
                         : 'white')
         });
         
-        var label = parent.append('text').text(this.data.label).attr({
+        var label = parent.text('').plain(this.data.label).attr({
             'alignment-baseline': 'middle',
             'stroke': 'none',
             'fill': 'white',
@@ -139,33 +139,33 @@
         
         if (this.type == 'output') {
             this.cn.attr('cursor', 'crosshair');
-            
+
             label.attr({
                 'x': x - 10,
                 'text-anchor': 'end'
             });
-            
-            this.cn.call((function() {
-                var drag = d3.behavior.drag();
 
-                drag.on('dragstart', function(d) {
-                    d3.event.sourceEvent.stopPropagation();
-
-                    me.onDragStart(d);
-                }).on('drag', function(d) {
-                    me.onDrag(d);
-                }).on('dragend', function(d) {
-                    me.onDragEnd(d);
-                });
-
-                return drag;
-            })());
+            // this.cn.call((function() {
+            //     var drag = d3.behavior.drag();
+            //
+            //     drag.on('dragstart', function(d) {
+            //         d3.event.sourceEvent.stopPropagation();
+            //
+            //         me.onDragStart(d);
+            //     }).on('drag', function(d) {
+            //         me.onDrag(d);
+            //     }).on('dragend', function(d) {
+            //         me.onDragEnd(d);
+            //     });
+            //
+            //     return drag;
+            // })());
         } else {
-            this.cn.on('mouseover', function() {
-                me.onMouseOver();
-            }).on('mouseout', function() {
-                me.onMouseOut()
-            });
+            // this.cn.on('mouseover', function() {
+            //     me.onMouseOver();
+            // }).on('mouseout', function() {
+            //     me.onMouseOut()
+            // });
         }
     }
     
