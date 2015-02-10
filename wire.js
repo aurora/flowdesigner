@@ -33,8 +33,8 @@
         d = Math.max(0, d - 5);
 
         return {
-            'x': Math.ceil(x1 + vx * d),
-            'y': Math.ceil(y1 + vy * d)
+            'x': Math.round(x1 + vx * d),
+            'y': Math.round(y1 + vy * d)
         }
     }
 
@@ -206,7 +206,7 @@
                 }
                 connector.onDrag = function(delta, event) {
                     if (wire !== null && end === null) {
-                        var txy = calcLine(wire.x(), wire.y(), event.clientX, event.clientY);
+                        var txy = calcLine(wire.x(), wire.y(), event.x, event.y);
 
                         wire.attr({'x2': txy.x, 'y2': txy.y});
                     }
@@ -236,7 +236,7 @@
                             // ... but only if connection is allowed
                             end = key;
 
-                            var xy = me.getConnectorCenter(event.target.instance);
+                            var xy = me.getConnectorCenter(connector.cn);
 
                             var txy = calcLine(wire.x(), wire.y(), xy.x, xy.y);
 
