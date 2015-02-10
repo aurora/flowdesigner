@@ -190,6 +190,10 @@
             'cursor': 'move'
         });
         
+        this.node.mousedown(function() {
+            this.front();
+        });
+        
         this.node.click = function() {
             me.onClick();
         }
