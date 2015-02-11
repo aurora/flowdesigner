@@ -142,40 +142,39 @@
         parent.addChild(label);
         
         if (this.type == 'output') {
+            var tool = new paper.Tool();
+    
             this.cn.onMouseEnter = function(event) {
                 document.body.style.cursor = 'crosshair';
+                tool.activate();
             };
             this.cn.onMouseLeave = function(event) {
                 document.body.style.cursor = 'default';
             };
             this.cn.onMouseDown = function(event) {
-                // event.stopPropagation();
+                event.stopPropagation();
             }
 
             var tool = new paper.Tool();
+            var drag = false;
             tool.onMouseDown = function(event) {
-                console.log(me.cn.strokeBounds.contains(event.point));
-                console.log(me.cn.strokeBounds, event.point);
-                
-                // console.log('tool', event, me.cn); //, .contains(event.point));
-                
-//                 console.log('tool', event.point, me.cn.hitTest(event.point, {
-//     segments: false,
-//     stroke: false,
-//     fill: true,
-//     tolerance: 0
-// }
-// ));
-
-                me.onDragStart(event);
+                if (me.cn.hitTest(event.point, {segments: false, stroke: false, fill: true, tolerance: 0})) {
+                    drag = true;
+                    me.onDragStart(event);
+                }
             }
             tool.onMouseDrag = function(event) {
                 event.stopPropagation();
 
-                me.onDrag(event);
+                if (drag) {
+                    me.onDrag(event);
+                }
             }
             tool.onMouseUp = function(event) {
-                me.onDragEnd(event);
+                if (drag) {
+                    me.onDragEnd(event);
+                    drag = false;
+                }
             }
         } else {
             this.cn.onMouseEnter = function(event) {
