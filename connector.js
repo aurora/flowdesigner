@@ -118,7 +118,6 @@
     {
         var me = this;
         
-        // this.cn = parent.circle().radius(6).transform({'x': x, 'y': y}).attr({
         this.cn = new paper.Path.Circle({
             center: [x, y],
             radius: 6,
