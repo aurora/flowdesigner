@@ -143,60 +143,48 @@
         parent.addChild(label);
         
         if (this.type == 'output') {
-            
-            
-            // var tool = new paper.Tool();
-            // var obj;
-            // tool.onMouseDown = function(event) {
-            //     obj = null;
-            //     var hitResult = paper.project.hitTest(event.point, hitOptions);
-            //
-            //     if (hitResult && hitResult.type == 'fill') //state fill
-            //         obj = hitResult.item;
-            // }
-            // tool.onMouseMove = function(event)
-            // {
-            //     var hitResult = paper.project.hitTest(event.point, hitOptions);
-            //     paper.project.activeLayer.selected = false;
-            //     if (hitResult && hitResult.item)
-            //     hitResult.item.selected = true;
-            // }
-            // tool.onMouseDrag = function(event)
-            // {
-            //     if (obj)
-            //         obj.position = event.point;
-            // }
-            // tool.onMouseUp = function(event)
-            // {
-            // }
-            
-            // this.cn.attr('cursor', 'crosshair');
-            //
-            // this.cn.draggable(function() {
-            //     return {'x': false, 'y': false};
-            // });
-            // this.cn.dragstart = function(delta, event){
-            //     event.stopPropagation();
-            //
-            //     me.onDragStart(delta, event);
-            // };
-            // this.cn.dragmove = function(delta, event){
-            //     event.stopPropagation();
-            //
-            //     me.onDrag(delta, event);
-            // };
-            // this.cn.dragend = function(delta, event){
-            //     event.stopPropagation();
-            //
-            //     me.onDragEnd(delta, event);
-            // };
+            this.cn.onMouseEnter = function(event) {
+                document.body.style.cursor = 'crosshair';
+            };
+            this.cn.onMouseLeave = function(event) {
+                document.body.style.cursor = 'default';
+            };
+            this.cn.onMouseDown = function(event) {
+                // event.stopPropagation();
+            }
+
+            var tool = new paper.Tool();
+            tool.onMouseDown = function(event) {
+                console.log(me.cn.strokeBounds.contains(event.point));
+                console.log(me.cn.strokeBounds, event.point);
+                
+                // console.log('tool', event, me.cn); //, .contains(event.point));
+                
+//                 console.log('tool', event.point, me.cn.hitTest(event.point, {
+//     segments: false,
+//     stroke: false,
+//     fill: true,
+//     tolerance: 0
+// }
+// ));
+
+                me.onDragStart(event);
+            }
+            tool.onMouseDrag = function(event) {
+                event.stopPropagation();
+
+                me.onDrag(event);
+            }
+            tool.onMouseUp = function(event) {
+                me.onDragEnd(event);
+            }
         } else {
-            // this.cn.mouseover(function(event) {
-            //     me.onMouseOver(event);
-            // });
-            // this.cn.mouseout(function(event) {
-            //     me.onMouseOut(event);
-            // });
+            this.cn.onMouseEnter = function(event) {
+                me.onMouseOver(event);
+            };
+            this.cn.onMouseLeave = function(event) {
+                me.onMouseOut(event);
+            };
         }
     }
     
@@ -213,15 +201,15 @@
     /*
      * Events.
      */
-    connector.prototype.onDragStart = function(delta, event)
+    connector.prototype.onDragStart = function(event)
     {
     }
     
-    connector.prototype.onDrag = function(delta, event)
+    connector.prototype.onDrag = function(event)
     {
     }
 
-    connector.prototype.onDragEnd = function(delta, event)
+    connector.prototype.onDragEnd = function(event)
     {
     }
 

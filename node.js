@@ -192,10 +192,6 @@
             me.diagram.wire.redrawWires(me.registry);
         }
         
-        this.node.onMouseMove = function(event) {
-            // console.log(event);
-        }
-
         var rect = new paper.Path.Rectangle({
             point: [0, 0],
             size: [this.node_width, this.node_height + cn * this.node_line_height],
@@ -236,10 +232,10 @@
 
         this.node.addChild(bclose);
         
-        bclose.onMouseOver = function() {
+        bclose.onMouseEnter = function() {
             this.set({opacity: 1});
         }
-        bclose.onMouseOut = function() {
+        bclose.onMouseLeave = function() {
             this.set({opacity: 0.5});
         }
         bclose.onClick = function() {
@@ -261,7 +257,7 @@
             }
         }, this);
 
-        this.node.translate(this.data.x, this.data.y);        
+        this.node.translate(this.data.x, this.data.y);
     }
 
     /*

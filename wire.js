@@ -193,25 +193,31 @@
 
             if (type == 'output') {
                 // source target of a wire
-                connector.onDragStart = function(delta, event) {
+                connector.onDragStart = function(event) {
                     var xy = me.getConnectorCenter(me.registry[key].cn);
 
-                    wire = me.diagram.getLayer('draw').line(xy.x, xy.y, xy.x, xy.y).attr({
-                        'stroke-width': 2,
-                        'stroke': 'red'
+                    me.diagram.getLayer('draw');
+
+                    wire = new paper.Path.Line({
+                        from: [xy.x, xy.y], 
+                        to: [xy.x, xy.y],
+                        strokeWidth: 2,
+                        strokeColor: 'red'
                     });
 
                     start = key;
                 }
-                connector.onDrag = function(delta, event) {
+                connector.onDrag = function(event) {
                     if (wire !== null && end === null) {
                         var xy = me.getConnectorCenter(me.registry[start].cn);
-                        var txy = calcLine(xy.x, xy.y, xy.x + delta.x, xy.y + delta.y);
+                        var txy = calcLine(xy.x, xy.y, event.point.x, event.point.y);
                         
-                        wire.plot(xy.x, xy.y, txy.x, txy.y);
+                        me.diagram.getLayer('draw');
+
+                        wire.set({pathData: 'M' + xy.x + ',' + xy.y + ' L' + txy.x + ',' + txy.y});
                     }
                 };
-                connector.onDragEnd = function(d) {
+                connector.onDragEnd = function(event) {
                     if (wire !== null) {
                         wire.remove();
 
@@ -240,7 +246,9 @@
                             var exy = me.getConnectorCenter(connector.cn);
                             var txy = calcLine(sxy.x, sxy.y, exy.x, exy.y);
 
-                            wire.plot(sxy.x, sxy.y, txy.x, txy.y);
+                            me.diagram.getLayer('draw');
+
+                            wire.set({pathData: 'M' + sxy.x + ',' + sxy.y + ' L' + txy.x + ',' + txy.y});
                         }
                     }
                 }
