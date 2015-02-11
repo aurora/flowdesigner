@@ -6,6 +6,30 @@
  */
 
 ;var diagram = (function() {
+    /*
+     * zoom and pan inspired by StableZoom
+     * https://github.com/mberth/PanAndZoom/blob/master/app/scripts/pan_and_zoom.coffee
+     */
+    function zoom(old_zoom, delta, c, p) {
+        var factor = 1.05;
+        var new_zoom = (delta < 0
+                        ? old_zoom * factor
+                        : (delta > 0
+                            ? old_zoom / factor
+                            : old_zoom));
+
+        return {
+            zoom: new_zoom,
+            offset: p.subtract(p.subtract(c).multiply(old_zoom / new_zoom)).subtract(c)
+        };
+    }
+
+    function pan(old_center, delta_x, delta_y) {
+        var factor = 0.75;
+
+        return old_center.add((new paper.Point(-delta_x, -delta_y)).multiply(factor));
+    }
+
     /**
      * Constructor.
      *
@@ -20,6 +44,42 @@
         this.wires = [];
         this.scopes = {};
 
+        // make diagram zoomable and panable
+        $('#' + canvas).mousewheel(function(event) {
+            var pos = paper.view.viewToProject(new paper.Point(event.offsetX, event.offsetY));
+            var ret = zoom(paper.view.zoom, event.deltaY, paper.view.center, pos);
+
+            paper.view.zoom = ret.zoom;
+            paper.view.center = paper.view.center.add(ret.offset);
+
+            event.preventDefault();
+
+            paper.view.draw();
+        });
+
+        // pan
+        var background = new this.canvas.Layer();
+
+        var rect = new paper.Path.Rectangle({
+            point: [0, 0],
+            size: [paper.view.viewSize.width, paper.view.viewSize.height],
+            fillColor: 'lightgray'
+        });
+
+        rect.onMouseEnter = function() {
+            document.body.style.cursor = 'pointer';
+        }
+        rect.onMouseLeave = function() {
+            document.body.style.cursor = 'default';
+        }
+        rect.onMouseDrag = function(event) {
+            var center = pan(paper.view.center, event.delta.x, event.delta.y);
+            paper.view.center = center;
+
+            event.preventDefault();
+        }
+
+        // finish setup
         this.layers = {
             'wires': new this.canvas.Layer(),
             'nodes': new this.canvas.Layer(),
@@ -90,9 +150,9 @@
         var layer = (typeof name !== 'undefined'
                         ? this.layers[name]
                         : this.canvas);
-                        
+
         layer.activate();
-        
+
         return layer;
     }
 
@@ -189,17 +249,17 @@
     {
         // determine if dagre should be used for layouting
         var use_dagre = false;
-        
+
         if (typeof dagre !== 'undefined') {
             for (var i = 0, rect = null, cnt = this.nodes.length; i < cnt; ++i) {
                 rect = this.nodes[i].getRect();
-            
+
                 if ((use_dagre = (rect.x === null || rect.y === null))) {
                     break;
                 }
             }
         }
-        
+
         if (use_dagre) {
             // render nodes with calculated graph layout using dagre library
             var g = new dagre.graphlib.Graph();
@@ -209,7 +269,7 @@
 
             this.nodes.forEach(function(node) {
                 var rect = node.getRect();
-            
+
                 g.setNode(node.getId(), {'width': rect.width, 'height': rect.height});
             });
 
@@ -224,7 +284,7 @@
 
             this.nodes.forEach(function(node) {
                 var rect = g.node(node.getId());
-            
+
                 node.render({'x': rect.x, 'y': rect.y});
             }, this);
         } else {
@@ -233,12 +293,12 @@
                 node.render();
             });
         }
-    
+
         // render wires
         this.wires.forEach(function(wire) {
             this.wire.addWire(wire.source, wire.target);
         }, this);
-        
+
         //
         paper.view.draw();
     }
