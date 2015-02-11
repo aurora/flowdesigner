@@ -171,42 +171,30 @@
         var me = this;
 
         this.node = new paper.Group();
+        this.node.onMouseDown = function(event) {
+            this.bringToFront();
+        }
+        this.node.onMouseDrag = function(event) {
+            me.data.x += event.delta.x;
+            me.data.y += event.delta.y;
+            
+            this.translate(event.delta.x, event.delta.y);
+            
+            // if (me.diagram.options.raster > 0) {
+            //     var bbox = this.bbox();
+            //
+            //     var x = Math.round(bbox.x / me.diagram.options.raster) * me.diagram.options.raster;
+            //     var y = Math.round(bbox.y / me.diagram.options.raster) * me.diagram.options.raster;
+            //
+            //     this.transform({'x': x, 'y': y});
+            // }
+
+            me.diagram.wire.redrawWires(me.registry);
+        }
         
-        // this.node.mousedown(function() {
-        //     this.front();
-        // });
-        //
-        // this.node.click = function() {
-        //     me.onClick();
-        // }
-        // this.node.dblclick = function() {
-        //     me.onDblClick();
-        // }
-        //
-        // this.node.draggable();
-        // this.node.dragstart = function(delta, event) {
-        //     event.stopPropagation();
-        // }
-        // this.node.dragmove = function(delta, event) {
-        //     event.stopPropagation();
-        //
-        //     me.data.x += delta.x;
-        //     me.data.y += delta.y;
-        //
-        //     if (me.diagram.options.raster > 0) {
-        //         var bbox = this.bbox();
-        //
-        //         var x = Math.round(bbox.x / me.diagram.options.raster) * me.diagram.options.raster;
-        //         var y = Math.round(bbox.y / me.diagram.options.raster) * me.diagram.options.raster;
-        //
-        //         this.transform({'x': x, 'y': y});
-        //     }
-        //
-        //     me.diagram.wire.redrawWires(me.registry);
-        // }
-        // this.node.dragend = function(delta, event) {
-        //     event.stopPropagation();
-        // }
+        this.node.onMouseMove = function(event) {
+            // console.log(event);
+        }
 
         var rect = new paper.Path.Rectangle({
             point: [0, 0],
@@ -219,14 +207,13 @@
 
         this.node.addChild(rect);
 
-        // rect.click(function() {
-        //     me.onClick();
-        // });
-        // rect.dblclick(function() {
-        //     me.onDblClick();
-        // });
-        //
-        
+        rect.onClick = function(event) {
+            me.onClick(event);
+        }
+        rect.onDoubleClick = function(event) {
+            me.onDblClick(event);
+        }
+
         var text = new paper.PointText({
             point: [5, 15],
             content: this.data.label,
@@ -243,30 +230,22 @@
             fillColor: 'white',
             fontFamily: 'Verdana, Arial, Helvetica, Sans-Serif',
             fontSize: 12,
-            justification: 'right'
+            justification: 'right',
+            opacity: 0.5
         });
 
         this.node.addChild(bclose);
         
-
-        // var bclose = this.node.text('').plain('\u00D7').leading(1).transform({'x': this.node_width - 5, 'y': 5}).attr({
-        //     'alignment-baseline': 'hanging',
-        //     'text-anchor': 'end',
-        //     'fill': 'white',
-        //     'opacity': 0.5,
-        //     'cursor': 'pointer'
-        // });
-        //
-        // bclose.mouseover(function() {
-        //     this.attr({'opacity': 1});
-        // });
-        // bclose.mouseout(function() {
-        //     this.attr({'opacity': 0.5});
-        // });
-        // bclose.click(function() {
-        //     me.diagram.removeNode(me.data.id);
-        // });
-        //
+        bclose.onMouseOver = function() {
+            this.set({opacity: 1});
+        }
+        bclose.onMouseOut = function() {
+            this.set({opacity: 0.5});
+        }
+        bclose.onClick = function() {
+            me.diagram.removeNode(me.data.id);
+        }
+        
         // render connectors
         var idx = {'input': 0, 'output': 0};
        

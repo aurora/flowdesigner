@@ -238,6 +238,9 @@
         this.wires.forEach(function(wire) {
             this.wire.addWire(wire.source, wire.target);
         }, this);
+        
+        //
+        paper.view.draw();
     }
 
     return diagram;

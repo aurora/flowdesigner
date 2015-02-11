@@ -115,7 +115,7 @@
                     var sxy = this.getConnectorCenter(this.registry[id].cn);
                     var txy = this.getConnectorCenter(target.cn);
 
-                    this.wires[key].wire.attr({'d': calcPath(sxy.x, sxy.y, txy.x, txy.y)});
+                    this.wires[key].wire.set({pathData: calcPath(sxy.x, sxy.y, txy.x, txy.y)});
                 }
             }, this);
         }, this);

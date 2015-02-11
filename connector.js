@@ -143,6 +143,33 @@
         parent.addChild(label);
         
         if (this.type == 'output') {
+            
+            
+            // var tool = new paper.Tool();
+            // var obj;
+            // tool.onMouseDown = function(event) {
+            //     obj = null;
+            //     var hitResult = paper.project.hitTest(event.point, hitOptions);
+            //
+            //     if (hitResult && hitResult.type == 'fill') //state fill
+            //         obj = hitResult.item;
+            // }
+            // tool.onMouseMove = function(event)
+            // {
+            //     var hitResult = paper.project.hitTest(event.point, hitOptions);
+            //     paper.project.activeLayer.selected = false;
+            //     if (hitResult && hitResult.item)
+            //     hitResult.item.selected = true;
+            // }
+            // tool.onMouseDrag = function(event)
+            // {
+            //     if (obj)
+            //         obj.position = event.point;
+            // }
+            // tool.onMouseUp = function(event)
+            // {
+            // }
+            
             // this.cn.attr('cursor', 'crosshair');
             //
             // this.cn.draggable(function() {
