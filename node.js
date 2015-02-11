@@ -140,7 +140,7 @@
     node.prototype.getRect = function()
     {
         var cn = Math.max(this.node_input.length, this.node_output.length);
-        
+
         return {
             'x':      (isNaN(this.data.x) ? null : this.data.x),
             'y':      (isNaN(this.data.y) ? null : this.data.y),
@@ -163,10 +163,10 @@
             this.data.x = 0;
             this.data.y = 0;
         }
-        
+
         // render node
         var layer = this.diagram.getLayer('nodes');
-        
+
         var cn = Math.max(this.node_input.length, this.node_output.length);
         var me = this;
 
@@ -177,9 +177,9 @@
         this.node.onMouseDrag = function(event) {
             me.data.x += event.delta.x;
             me.data.y += event.delta.y;
-            
+
             this.translate(event.delta.x, event.delta.y);
-            
+
             // if (me.diagram.options.raster > 0) {
             //     var bbox = this.bbox();
             //
@@ -191,7 +191,7 @@
 
             me.diagram.wire.redrawWires(me.registry);
         }
-        
+
         var rect = new paper.Path.Rectangle({
             point: [0, 0],
             size: [this.node_width, this.node_height + cn * this.node_line_height],
@@ -209,6 +209,12 @@
         rect.onDoubleClick = function(event) {
             me.onDblClick(event);
         }
+        rect.onMouseEnter = function(event) {
+            document.body.style.cursor = 'pointer';
+        }
+        rect.onMouseLeave = function(event) {
+            document.body.style.cursor = 'default';
+        }
 
         var text = new paper.PointText({
             point: [5, 15],
@@ -217,9 +223,9 @@
             fontFamily: 'Verdana, Arial, Helvetica, Sans-Serif',
             fontSize: 12
         });
-        
+
         this.node.addChild(text);
-        
+
         var bclose = new paper.PointText({
             point: [this.node_width - 5, 15],
             content: '\u00D7',
@@ -231,7 +237,7 @@
         });
 
         this.node.addChild(bclose);
-        
+
         bclose.onMouseEnter = function() {
             this.set({opacity: 1});
         }
@@ -241,10 +247,10 @@
         bclose.onClick = function() {
             me.diagram.removeNode(me.data.id);
         }
-        
+
         // render connectors
         var idx = {'input': 0, 'output': 0};
-       
+
         this.registry.forEach(function(id) {
             var connector = this.diagram.wire.getConnector(id);
 
