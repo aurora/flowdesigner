@@ -74,7 +74,14 @@
         wire.strokeColor = (this.diagram.hasScope(scope)
                             ? this.diagram.getScope(scope).color
                             : 'white');
-        
+
+        wire.onMouseEnter = function(event) {
+            document.body.style.cursor = 'pointer';
+        }
+        wire.onMouseLeave = function(event) {
+            document.body.style.cursor = 'default';
+        }
+
         source.addConnection(target);
         target.addConnection(source);
 
@@ -130,7 +137,7 @@
     wire.prototype.getConnectorCenter = function(node)
     {
         var b = node.strokeBounds;
-        
+
         return {
             'x': b.x + (b.width / 2),
             'y': b.y + (b.height / 2)
@@ -199,7 +206,7 @@
                     me.diagram.getLayer('draw');
 
                     wire = new paper.Path.Line({
-                        from: [xy.x, xy.y], 
+                        from: [xy.x, xy.y],
                         to: [xy.x, xy.y],
                         strokeWidth: 2,
                         strokeColor: 'red'
@@ -211,7 +218,7 @@
                     if (wire !== null && end === null) {
                         var xy = me.getConnectorCenter(me.registry[start].cn);
                         var txy = calcLine(xy.x, xy.y, event.point.x, event.point.y);
-                        
+
                         me.diagram.getLayer('draw');
 
                         wire.set({pathData: 'M' + xy.x + ',' + xy.y + ' L' + txy.x + ',' + txy.y});
@@ -235,7 +242,7 @@
                 // drop target for a wire
                 connector.onMouseOver = function(event) {
                     event.stopPropagation();
-                    
+
                     if (wire !== null) {
                         // snap wire ...
                         if (connector.isAllowed(me.registry[start])) {
@@ -254,7 +261,7 @@
                 }
                 connector.onMouseOut = function(event) {
                     event.stopPropagation();
-                    
+
                     end = null;
                 };
             }
