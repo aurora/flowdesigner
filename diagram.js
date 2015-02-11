@@ -14,36 +14,19 @@
      */
     function diagram(canvas, options)
     {
-        this.canvas = SVG('canvas').size(1000, 500).svg();
+        this.canvas = paper.setup(canvas);
         this.options = this.extend({'raster': 10}, options || {});
         this.nodes = [];
         this.wires = [];
         this.scopes = {};
 
-        var background = this.canvas.rect(1000, 500);
-
         this.layers = {
-            'wires': this.canvas.group(),
-            'nodes': this.canvas.group(),
-            'draw': this.canvas.group()
+            'wires': new this.canvas.Layer(),
+            'nodes': new this.canvas.Layer(),
+            'draw': new this.canvas.Layer()
         };
 
         this.wire = new diagram.wire(this);
-
-        // make diagram draggable
-        var me = this;
-        var txy = {'x': 0, 'y': 0};
-
-        background.draggable(function() {
-            return {'x': false, 'y': false};
-        });    
-        background.dragmove = function(delta, event) {
-            me.canvas.transform({'x': txy.x + delta.x, 'y': txy.y + delta.y});
-        }
-        background.dragend = function(delta, event) {
-            txy.x += delta.x;
-            txy.y += delta.y;
-        }
     }
 
     /**
@@ -96,7 +79,7 @@
     }
 
     /**
-     * Return layer of specified name. Returns the canvas node if no layer name
+     * Return and activate layer of specified name. Returns the canvas layer, if no layer name
      * is specified.
      *
      * @param   string      name                Name of layer to get.
@@ -104,9 +87,13 @@
      */
     diagram.prototype.getLayer = function(name)
     {
-        return (typeof name !== 'undefined'
-                ? this.layers[name]
-                : this.canvas);
+        var layer = (typeof name !== 'undefined'
+                        ? this.layers[name]
+                        : this.canvas);
+                        
+        layer.activate();
+        
+        return layer;
     }
 
     /**
@@ -213,8 +200,6 @@
             }
         }
         
-        var layer = this.getLayer('nodes');
-
         if (use_dagre) {
             // render nodes with calculated graph layout using dagre library
             var g = new dagre.graphlib.Graph();
@@ -240,12 +225,12 @@
             this.nodes.forEach(function(node) {
                 var rect = g.node(node.getId());
             
-                node.render(layer, {'x': rect.x, 'y': rect.y});
+                node.render({'x': rect.x, 'y': rect.y});
             }, this);
         } else {
             // render without using dagre
             this.nodes.forEach(function(node) {
-                node.render(layer);
+                node.render();
             });
         }
     

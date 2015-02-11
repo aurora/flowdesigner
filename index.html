@@ -1,6 +1,5 @@
 <html>
-    <script type="text/javascript" src="vendor/svg.min.js"></script>
-    <script type="text/javascript" src="vendor/svg.draggable.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.21/paper-full.min.js"></script>
     <script type="text/javascript" src="http://cpettitt.github.io/project/dagre/latest/dagre.min.js"></script>
     <script type="text/javascript" src="diagram.js"></script>
     <script type="text/javascript" src="node.js"></script>
@@ -15,9 +14,9 @@
     }
     </style>
     <body>
-        <div id="canvas" width="100%" height="95%"></div>
+        <canvas id="canvas" resize></canvas>
         <script type="text/javascript">
-        var d = new diagram('#canvas');
+        var d = new diagram('canvas');
         d.addScope('image', {
             'color': '#00aa00'
         });

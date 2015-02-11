@@ -152,10 +152,9 @@
     /**
      * Render node.
      *
-     * @param   SVGNode         parent              Parent node.
      * @param   object          pos                 Optional {x: x, y: y} pair to use for rendering instead of in data provided x,y values.
      */
-    node.prototype.render = function(parent, pos)
+    node.prototype.render = function(pos)
     {
         if (typeof pos !== 'undefined' && 'x' in pos && 'y' in pos) {
             this.data.x = pos.x;
@@ -166,92 +165,114 @@
         }
         
         // render node
+        var layer = this.diagram.getLayer('nodes');
+        
         var cn = Math.max(this.node_input.length, this.node_output.length);
         var me = this;
 
-        this.node = parent.group().transform({
-            'x': this.data.x,
-            'y': this.data.y
+        this.node = new paper.Group();
+        
+        // this.node.mousedown(function() {
+        //     this.front();
+        // });
+        //
+        // this.node.click = function() {
+        //     me.onClick();
+        // }
+        // this.node.dblclick = function() {
+        //     me.onDblClick();
+        // }
+        //
+        // this.node.draggable();
+        // this.node.dragstart = function(delta, event) {
+        //     event.stopPropagation();
+        // }
+        // this.node.dragmove = function(delta, event) {
+        //     event.stopPropagation();
+        //
+        //     me.data.x += delta.x;
+        //     me.data.y += delta.y;
+        //
+        //     if (me.diagram.options.raster > 0) {
+        //         var bbox = this.bbox();
+        //
+        //         var x = Math.round(bbox.x / me.diagram.options.raster) * me.diagram.options.raster;
+        //         var y = Math.round(bbox.y / me.diagram.options.raster) * me.diagram.options.raster;
+        //
+        //         this.transform({'x': x, 'y': y});
+        //     }
+        //
+        //     me.diagram.wire.redrawWires(me.registry);
+        // }
+        // this.node.dragend = function(delta, event) {
+        //     event.stopPropagation();
+        // }
+
+        var rect = new paper.Path.Rectangle({
+            point: [0, 0],
+            size: [this.node_width, this.node_height + cn * this.node_line_height],
+            radius: 5,
+            strokeColor: 'black',
+            fillColor: this.node_color,
+            opacity: this.node_opacity
+        });
+
+        this.node.addChild(rect);
+
+        // rect.click(function() {
+        //     me.onClick();
+        // });
+        // rect.dblclick(function() {
+        //     me.onDblClick();
+        // });
+        //
+        
+        var text = new paper.PointText({
+            point: [5, 15],
+            content: this.data.label,
+            fillColor: 'white',
+            fontFamily: 'Verdana, Arial, Helvetica, Sans-Serif',
+            fontSize: 12
         });
         
-        this.node.mousedown(function() {
-            this.front();
-        });
+        this.node.addChild(text);
         
-        this.node.click = function() {
-            me.onClick();
-        }
-        this.node.dblclick = function() {
-            me.onDblClick();
-        }
-
-        this.node.draggable();
-        this.node.dragstart = function(delta, event) {
-            event.stopPropagation();
-        }
-        this.node.dragmove = function(delta, event) {
-            event.stopPropagation();
-            
-            me.data.x += delta.x;
-            me.data.y += delta.y;
-
-            if (me.diagram.options.raster > 0) {
-                var bbox = this.bbox();
-            
-                var x = Math.round(bbox.x / me.diagram.options.raster) * me.diagram.options.raster;
-                var y = Math.round(bbox.y / me.diagram.options.raster) * me.diagram.options.raster;
-                
-                this.transform({'x': x, 'y': y});
-            }
-
-            me.diagram.wire.redrawWires(me.registry);
-        }
-        this.node.dragend = function(delta, event) {
-            event.stopPropagation();
-        }
-
-        var rect = this.node.rect(this.node_width, this.node_height + cn * this.node_line_height).radius(5).attr({
-            'stroke': 'black',
-            'fill': this.node_color,
-            'fill-opacity': this.node_opacity
-        });
-        rect.click(function() {
-            me.onClick();
-        });
-        rect.dblclick(function() {
-            me.onDblClick();
+        var bclose = new paper.PointText({
+            point: [this.node_width - 5, 15],
+            content: '\u00D7',
+            fillColor: 'white',
+            fontFamily: 'Verdana, Arial, Helvetica, Sans-Serif',
+            fontSize: 12,
+            justification: 'right'
         });
 
-        this.node.text('').plain(this.data.label).leading(1).transform({'x': 5, 'y': 5}).attr({
-            'alignment-baseline': 'hanging',
-            'stroke': 'none',
-            'fill': 'white'
-        });
-
-        var bclose = this.node.text('').plain('\u00D7').leading(1).transform({'x': this.node_width - 5, 'y': 5}).attr({
-            'alignment-baseline': 'hanging',
-            'text-anchor': 'end',
-            'fill': 'white',
-            'opacity': 0.5,
-            'cursor': 'pointer'
-        });
+        this.node.addChild(bclose);
         
-        bclose.mouseover(function() {
-            this.attr({'opacity': 1});
-        });
-        bclose.mouseout(function() {
-            this.attr({'opacity': 0.5});
-        });
-        bclose.click(function() {
-            me.diagram.removeNode(me.data.id);
-        });
 
+        // var bclose = this.node.text('').plain('\u00D7').leading(1).transform({'x': this.node_width - 5, 'y': 5}).attr({
+        //     'alignment-baseline': 'hanging',
+        //     'text-anchor': 'end',
+        //     'fill': 'white',
+        //     'opacity': 0.5,
+        //     'cursor': 'pointer'
+        // });
+        //
+        // bclose.mouseover(function() {
+        //     this.attr({'opacity': 1});
+        // });
+        // bclose.mouseout(function() {
+        //     this.attr({'opacity': 0.5});
+        // });
+        // bclose.click(function() {
+        //     me.diagram.removeNode(me.data.id);
+        // });
+        //
         // render connectors
         var idx = {'input': 0, 'output': 0};
-        
+       
         this.registry.forEach(function(id) {
             var connector = this.diagram.wire.getConnector(id);
-            
+
             if (connector.getType() == 'input') {
                 connector.render(this.node, 10, this.node_height + idx.input * this.node_line_height);
                 ++idx.input;
@@ -260,6 +281,8 @@
                 ++idx.output;
             }
         }, this);
+
+        this.node.translate(this.data.x, this.data.y);        
     }
 
     /*

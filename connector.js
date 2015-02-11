@@ -119,57 +119,57 @@
         var me = this;
         
         // this.cn = parent.circle().radius(6).transform({'x': x, 'y': y}).attr({
-        this.cn = parent.circle().radius(6).attr({
-            'cx': x,
-            'cy': y,
-            'stroke': 'black',
-            'stroke-width': 2,
-            'fill': (this.node.diagram.hasScope(this.data.scope)
+        this.cn = new paper.Path.Circle({
+            center: [x, y],
+            radius: 6,
+            strokeColor: 'black',
+            strokeWidth: 2,
+            fillColor: (this.node.diagram.hasScope(this.data.scope)
                         ? this.node.diagram.getScope(this.data.scope).color
                         : 'white')
+        })
+        
+        parent.addChild(this.cn);
+
+        var label = new paper.PointText({
+            point: [(this.type == 'output' ? x - 10 : x + 10), y + 5],
+            content: this.data.label,
+            fillColor: 'white',
+            fontFamily: 'Verdana, Arial, Helvetica, Sans-Serif',
+            fontSize: 12,
+            justification: (this.type == 'output' ? 'right' : 'left')
         });
         
-        var label = parent.text('').plain(this.data.label).attr({
-            'alignment-baseline': 'middle',
-            'stroke': 'none',
-            'fill': 'white',
-            'x': x + 10,
-            'y': y + 2
-        });
+        parent.addChild(label);
         
         if (this.type == 'output') {
-            this.cn.attr('cursor', 'crosshair');
-
-            label.attr({
-                'x': x - 10,
-                'text-anchor': 'end'
-            });
-
-            this.cn.draggable(function() {
-                return {'x': false, 'y': false};
-            });
-            this.cn.dragstart = function(delta, event){
-                event.stopPropagation();
-                
-                me.onDragStart(delta, event);
-            };
-            this.cn.dragmove = function(delta, event){
-                event.stopPropagation();
-                
-                me.onDrag(delta, event);
-            };
-            this.cn.dragend = function(delta, event){
-                event.stopPropagation();
-                
-                me.onDragEnd(delta, event);
-            };
+            // this.cn.attr('cursor', 'crosshair');
+            //
+            // this.cn.draggable(function() {
+            //     return {'x': false, 'y': false};
+            // });
+            // this.cn.dragstart = function(delta, event){
+            //     event.stopPropagation();
+            //
+            //     me.onDragStart(delta, event);
+            // };
+            // this.cn.dragmove = function(delta, event){
+            //     event.stopPropagation();
+            //
+            //     me.onDrag(delta, event);
+            // };
+            // this.cn.dragend = function(delta, event){
+            //     event.stopPropagation();
+            //
+            //     me.onDragEnd(delta, event);
+            // };
         } else {
-            this.cn.mouseover(function(event) {
-                me.onMouseOver(event);
-            });
-            this.cn.mouseout(function(event) {
-                me.onMouseOut(event);
-            });
+            // this.cn.mouseover(function(event) {
+            //     me.onMouseOver(event);
+            // });
+            // this.cn.mouseout(function(event) {
+            //     me.onMouseOut(event);
+            // });
         }
     }
     

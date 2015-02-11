@@ -68,14 +68,13 @@
         var sxy = this.getConnectorCenter(source.cn);
         var txy = this.getConnectorCenter(target.cn);
 
-        var wire = this.diagram.getLayer('wires').path(calcPath(sxy.x, sxy.y, txy.x, txy.y)).attr({
-            'stroke-width': 4,
-            'stroke': (this.diagram.hasScope(scope)
-                        ? this.diagram.getScope(scope).color
-                        : 'white'),
-            'fill': 'none'
-        });
-
+        var layer = this.diagram.getLayer('wires');
+        var wire = new paper.Path(calcPath(sxy.x, sxy.y, txy.x, txy.y));
+        wire.strokeWidth = 4;
+        wire.strokeColor = (this.diagram.hasScope(scope)
+                            ? this.diagram.getScope(scope).color
+                            : 'white');
+        
         source.addConnection(target);
         target.addConnection(source);
 
@@ -130,13 +129,11 @@
      */
     wire.prototype.getConnectorCenter = function(node)
     {
-        console.log(node.cx(), node.cy());
+        var b = node.strokeBounds;
         
-        var rbox = node.rbox();
-
         return {
-            'x': rbox.x + (rbox.width / 2),
-            'y': rbox.y + (rbox.height / 2)
+            'x': b.x + (b.width / 2),
+            'y': b.y + (b.height / 2)
         };
     }
 
