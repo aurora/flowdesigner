@@ -5,7 +5,7 @@
  * @author      Harald Lapp <harald@octris.org>
  */
 
-;diagram.wire = (function() {
+define(function(require) {
     /**
      * Calculate bezier wire path.
      */
@@ -271,4 +271,4 @@
     })();
 
     return wire;
-})();
+});

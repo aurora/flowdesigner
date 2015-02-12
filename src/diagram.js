@@ -5,7 +5,9 @@
  * @author      Harald Lapp <harald@octris.org>
  */
 
-;var diagram = (function() {
+define(function(require) {
+    var wire = require('./wire');
+
     /*
      * zoom inspired by StableZoom
      * https://github.com/mberth/PanAndZoom/blob/master/app/scripts/pan_and_zoom.coffee
@@ -37,6 +39,7 @@
         this.nodes = [];
         this.wires = [];
         this.scopes = {};
+        this.registry = {};
 
         this.layers = {
             'wires': new this.canvas.Layer(),
@@ -44,7 +47,7 @@
             'draw': new this.canvas.Layer()
         };
 
-        this.wire = new diagram.wire(this);
+        this.wire = new wire(this);
 
         // zoom
         $('#' + canvas).mousewheel(function(event) {
@@ -64,30 +67,30 @@
             var tool = new paper.Tool();
             var drag = false;
             var point = {x: 0, y: 0};
-            
+
             tool.onMouseDrag = function(event) {
                 if (drag) {
                     var delta = {
                         x: point.x - event.event.offsetX,
                         y: point.y - event.event.offsetY
                     };
-                    
+
                     point = {x: event.event.offsetX, y: event.event.offsetY};
-                
+
                     paper.view.center = paper.view.center.add(new paper.Point(delta.x, delta.y));
-                
+
                     event.stopPropagation();
                 }
             }
             tool.onMouseUp = function(event) {
                 drag = false;
             }
-        
+
             $('#' + canvas).on({
                 mousedown: function(event) {
                     if (event.shiftKey) {
                         tool.activate();
-                    
+
                         drag = true;
                         point = {x: event.offsetX, y: event.offsetY};
                     }
@@ -111,6 +114,17 @@
 
         return origin;
     };
+
+    /**
+     * Register a node.
+     *
+     * @param   string      name                Name of node to register.
+     * @param   string      path                Path to node module.
+     */
+    diagram.prototype.registerNode = function(name, path)
+    {
+        this.registry[name] = path;
+    }
 
     /**
      * Add a connector scope.
@@ -204,9 +218,16 @@
      */
     diagram.prototype.addNode = function(data)
     {
-        var node = new node_types[data.node](this, data);
+        var me = this;
 
-        this.nodes.push(node);
+        require(['../nodes/' + data.node], function(node) {
+            me.nodes.push(new node(me, data));
+        });
+
+        // var node = require('../nodes/' + data.node);
+
+        // var node = new node_types[data.node](this, data);
+
     }
 
     /**
@@ -311,4 +332,4 @@
     }
 
     return diagram;
-})();
+});

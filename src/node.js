@@ -5,7 +5,9 @@
  * @author      Harald Lapp <harald@octris.org>
  */
 
-;diagram.node = (function() {
+define(function(require) {
+    var connector = require('./connector');
+
     var id = 0;
 
     /**
@@ -29,16 +31,16 @@
 
         // register input connectors
         this.node_input.forEach(function(data, idx) {
-            var connector = new diagram.connector('input', this, data);
+            var cn = new connector('input', this, data);
 
-            this.registry.push(this.diagram.wire.registerConnector(connector));
+            this.registry.push(this.diagram.wire.registerConnector(cn));
         }, this);
 
         // register output connectors
         this.node_output.forEach(function(data, idx) {
-            var connector = new diagram.connector('output', this, data);
+            var cn = new connector('output', this, data);
 
-            this.registry.push(this.diagram.wire.registerConnector(connector));
+            this.registry.push(this.diagram.wire.registerConnector(cn));
         }, this);
     }
 
@@ -251,13 +253,13 @@
         var idx = {'input': 0, 'output': 0};
 
         this.registry.forEach(function(id) {
-            var connector = this.diagram.wire.getConnector(id);
+            var cn = this.diagram.wire.getConnector(id);
 
-            if (connector.getType() == 'input') {
-                connector.render(this.node, 10, this.node_height + idx.input * this.node_line_height);
+            if (cn.getType() == 'input') {
+                cn.render(this.node, 10, this.node_height + idx.input * this.node_line_height);
                 ++idx.input;
             } else {
-                connector.render(this.node, this.node_width - 10, this.node_height + idx.output * this.node_line_height);
+                cn.render(this.node, this.node_width - 10, this.node_height + idx.output * this.node_line_height);
                 ++idx.output;
             }
         }, this);
@@ -274,4 +276,4 @@
     }
 
     return node;
-})();
+});

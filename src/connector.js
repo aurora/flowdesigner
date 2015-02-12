@@ -5,7 +5,7 @@
  * @author      Harald Lapp <harald@octris.org>
  */
 
-;diagram.connector = (function() {
+define(function(require) {
     /**
      * Constructor.
      *
@@ -22,7 +22,7 @@
         this.connections = {};
 
         this.cn = null;
-        
+
         if (!('id' in this.data)) {
             this.data.id = node.getId() + '-' + this.data.name;
         }
@@ -30,7 +30,7 @@
             this.data.scope = '';
         }
     }
-    
+
     /**
      * Add a connection to an other connector.
      *
@@ -40,7 +40,7 @@
     {
         this.connections[target.getId()] = target;
     }
-      
+
     /**
      * Return connections.
      *
@@ -50,19 +50,19 @@
     {
         return Object.keys(this.connections).map(function(k) { return this.connections[k]; }, this);
     }
-  
+
     /**
      * Remove connection.
      */
     connector.prototype.removeConnection = function(target)
     {
         var id = target.getId();
-        
+
         if (id in this.connections) {
             delete this.connections[id];
         }
     }
-    
+
     /**
      * Return ID of connector.
      *
@@ -117,7 +117,7 @@
     connector.prototype.render = function(parent, x, y)
     {
         var me = this;
-        
+
         this.cn = new paper.Path.Circle({
             center: [x, y],
             radius: 6,
@@ -127,7 +127,7 @@
                         ? this.node.diagram.getScope(this.data.scope).color
                         : 'white')
         })
-        
+
         parent.addChild(this.cn);
 
         var label = new paper.PointText({
@@ -138,12 +138,12 @@
             fontSize: 12,
             justification: (this.type == 'output' ? 'right' : 'left')
         });
-        
+
         parent.addChild(label);
-        
+
         if (this.type == 'output') {
             var tool = new paper.Tool();
-    
+
             this.cn.onMouseEnter = function(event) {
                 document.body.style.cursor = 'crosshair';
                 tool.activate();
@@ -185,7 +185,7 @@
             };
         }
     }
-    
+
     /**
      * Return type of connector ('input' or 'output').
      *
@@ -195,14 +195,14 @@
     {
         return this.type;
     }
-    
+
     /*
      * Events.
      */
     connector.prototype.onDragStart = function(event)
     {
     }
-    
+
     connector.prototype.onDrag = function(event)
     {
     }
@@ -220,4 +220,4 @@
     }
 
     return connector;
-})();
+});

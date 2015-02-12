@@ -5,37 +5,32 @@
 /**
  * Constructor.
  */
-if (typeof node_types == 'undefined') {
-    var node_types = {};
-}
-
-;node_types.node_test2 = (function() {
-    function node(dia, data)
+define(['../src/node'], function(node) {
+    function node_test2(dia, data)
     {
-        diagram.node.call(this, dia, data);
+        node.call(this, dia, data);
     }
 
-    node.prototype = Object.create(diagram.node.prototype);
-    node.prototype.constructor = node;
+    node_test2.prototype = Object.create(node.prototype);
+    node_test2.prototype.constructor = node;
 
-    node.prototype.node_color = '#550000';
+    node_test2.prototype.node_color = '#550000';
 
-    node.prototype.onClick = function(d) {
+    node_test2.prototype.onClick = function(d) {
         console.log('click', d);
     }
-    node.prototype.onDblClick = function(d) {
+    node_test2.prototype.onDblClick = function(d) {
         console.log('dblclick', d);
     }
 
-    node.prototype.node_input = [
+    node_test2.prototype.node_input = [
         {'name': 'in-1', 'label': 'Image', 'scope': 'image'},
         {'name': 'in-2', 'label': 'Watermark', 'scope': 'image'},
     ];
-    
-    node.prototype.node_output = [
+
+    node_test2.prototype.node_output = [
         {'name': 'out1-1', 'label': 'Image', 'scope': 'image'},
     ];
-    
-    return node;
-})();
 
+    return node_test2;
+});

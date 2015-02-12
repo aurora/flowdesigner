@@ -5,36 +5,31 @@
 /**
  * Constructor.
  */
-if (typeof node_types == 'undefined') {
-    var node_types = {};
-}
-
-;node_types.node_test = (function() {
-    function node(dia, data)
+define(['../src/node'], function(node) {
+    function node_test(dia, data)
     {
-        diagram.node.call(this, dia, data);
+        node.call(this, dia, data);
     }
 
-    node.prototype = Object.create(diagram.node.prototype);
-    node.prototype.constructor = node;
+    node_test.prototype = Object.create(node.prototype);
+    node_test.prototype.constructor = node;
 
-    node.prototype.onClick = function(d) {
+    node_test.prototype.onClick = function(d) {
         console.log('click', d);
     }
-    node.prototype.onDblClick = function(d) {
+    node_test.prototype.onDblClick = function(d) {
         console.log('dblclick', d);
     }
 
-    node.prototype.node_input = [
+    node_test.prototype.node_input = [
         {'name': 'in-1', 'label': 'Image', 'scope': 'image'},
         {'name': 'in-2', 'label': 'Control', 'scope': 'ctrl'}
     ];
-    
-    node.prototype.node_output = [
+
+    node_test.prototype.node_output = [
         {'name': 'out1-1', 'label': 'Image', 'scope': 'image'},
         {'name': 'out1-2', 'label': 'Control', 'scope': 'ctrl'}
     ];
-    
-    return node;
-})();
 
+    return node_test;
+});
