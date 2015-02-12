@@ -6,7 +6,8 @@
  */
 
 define(function(require) {
-    var wire = require('./wire');
+    var wire = require('./wire'),
+        node = require('./node');
 
     /*
      * zoom inspired by StableZoom
@@ -116,23 +117,43 @@ define(function(require) {
     };
 
     /**
-     * Register a node.
+     * Define a node.
      *
-     * @param   string      name                Name of node to register.
-     * @param   string      path                Path to node module.
+     * @param   string      name                Name of node to define.
+     * @param   string      def                 Node definition.
      */
-    diagram.prototype.registerNode = function(name, path)
+    diagram.prototype.defineNode = function(name, def)
     {
-        this.registry[name] = path;
+        function def_node(dia, data) {
+            node.call(this, dia, data);
+        }
+
+        def_node.prototype = Object.create(node.prototype);
+        def_node.prototype.constructor = def_node;
+
+        def_node.prototype.onClick = function(d) {
+            console.log('click', d);
+        }
+        def_node.prototype.onDblClick = function(d) {
+            console.log('dblclick', d);
+        }
+        def_node.prototype.node_input = def.input;
+        def_node.prototype.node_output = def.output;
+
+        if (typeof def['color'] !== 'undefined') {
+            def_node.prototype.node_color = def['color'];
+        }
+
+        this.registry[name] = def_node;
     }
 
     /**
-     * Add a connector scope.
+     * Define a connector scope.
      *
      * @param   string      name                Name of scope.
      * @param   object      settings            Scope settings.
      */
-    diagram.prototype.addScope = function(name, settings)
+    diagram.prototype.defineScope = function(name, settings)
     {
         this.scopes[name] = settings;
     }
@@ -218,16 +239,11 @@ define(function(require) {
      */
     diagram.prototype.addNode = function(data)
     {
-        var me = this;
+        if (typeof this.registry[data.node] == 'undefined') {
+            return;
+        }
 
-        require(['../nodes/' + data.node], function(node) {
-            me.nodes.push(new node(me, data));
-        });
-
-        // var node = require('../nodes/' + data.node);
-
-        // var node = new node_types[data.node](this, data);
-
+        this.nodes.push(new this.registry[data.node](this, data));
     }
 
     /**
