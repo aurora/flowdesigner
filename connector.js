@@ -151,9 +151,9 @@
             this.cn.onMouseLeave = function(event) {
                 document.body.style.cursor = 'default';
             };
-            // this.cn.onMouseDown = function(event) {
-            //     event.stopPropagation();
-            // }
+            this.cn.onMouseDown = function(event) {
+                event.stopPropagation();
+            }
 
             var tool = new paper.Tool();
             var drag = false;
