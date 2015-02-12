@@ -7,7 +7,7 @@
 
 ;var diagram = (function() {
     /*
-     * zoom and pan inspired by StableZoom
+     * zoom inspired by StableZoom
      * https://github.com/mberth/PanAndZoom/blob/master/app/scripts/pan_and_zoom.coffee
      */
     function zoom(old_zoom, delta, c, p) {
@@ -24,12 +24,6 @@
         };
     }
 
-    function pan(old_center, delta_x, delta_y) {
-        var factor = 0.75;
-
-        return old_center.add((new paper.Point(-delta_x, -delta_y)).multiply(factor));
-    }
-
     /**
      * Constructor.
      *
@@ -44,7 +38,15 @@
         this.wires = [];
         this.scopes = {};
 
-        // make diagram zoomable and panable
+        this.layers = {
+            'wires': new this.canvas.Layer(),
+            'nodes': new this.canvas.Layer(),
+            'draw': new this.canvas.Layer()
+        };
+
+        this.wire = new diagram.wire(this);
+
+        // zoom
         $('#' + canvas).mousewheel(function(event) {
             var pos = paper.view.viewToProject(new paper.Point(event.offsetX, event.offsetY));
             var ret = zoom(paper.view.zoom, event.deltaY, paper.view.center, pos);
@@ -58,35 +60,40 @@
         });
 
         // pan
-        var background = new this.canvas.Layer();
-
-        var rect = new paper.Path.Rectangle({
-            point: [0, 0],
-            size: [paper.view.viewSize.width, paper.view.viewSize.height],
-            fillColor: 'lightgray'
-        });
-
-        rect.onMouseEnter = function() {
-            document.body.style.cursor = 'pointer';
-        }
-        rect.onMouseLeave = function() {
-            document.body.style.cursor = 'default';
-        }
-        rect.onMouseDrag = function(event) {
-            var center = pan(paper.view.center, event.delta.x, event.delta.y);
-            paper.view.center = center;
-
-            event.preventDefault();
-        }
-
-        // finish setup
-        this.layers = {
-            'wires': new this.canvas.Layer(),
-            'nodes': new this.canvas.Layer(),
-            'draw': new this.canvas.Layer()
-        };
-
-        this.wire = new diagram.wire(this);
+        (function() {
+            var tool = new paper.Tool();
+            var drag = false;
+            var point = {x: 0, y: 0};
+            
+            tool.onMouseDrag = function(event) {
+                if (drag) {
+                    var delta = {
+                        x: point.x - event.event.offsetX,
+                        y: point.y - event.event.offsetY
+                    };
+                    
+                    point = {x: event.event.offsetX, y: event.event.offsetY};
+                
+                    paper.view.center = paper.view.center.add(new paper.Point(delta.x, delta.y));
+                
+                    event.stopPropagation();
+                }
+            }
+            tool.onMouseUp = function(event) {
+                drag = false;
+            }
+        
+            $('#' + canvas).on({
+                mousedown: function(event) {
+                    if (event.shiftKey) {
+                        tool.activate();
+                    
+                        drag = true;
+                        point = {x: event.offsetX, y: event.offsetY};
+                    }
+                }
+            });
+        })();
     }
 
     /**

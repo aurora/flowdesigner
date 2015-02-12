@@ -169,27 +169,32 @@
 
         var cn = Math.max(this.node_input.length, this.node_output.length);
         var me = this;
+        var drag = false;
 
         this.node = new paper.Group();
         this.node.onMouseDown = function(event) {
-            this.bringToFront();
+            if ((drag = !event.event.shiftKey)) {
+                this.bringToFront();
+            }
         }
         this.node.onMouseDrag = function(event) {
-            me.data.x += event.delta.x;
-            me.data.y += event.delta.y;
+            if (drag) {
+                me.data.x += event.delta.x;
+                me.data.y += event.delta.y;
 
-            this.translate(event.delta.x, event.delta.y);
+                this.translate(event.delta.x, event.delta.y);
 
-            // if (me.diagram.options.raster > 0) {
-            //     var bbox = this.bbox();
-            //
-            //     var x = Math.round(bbox.x / me.diagram.options.raster) * me.diagram.options.raster;
-            //     var y = Math.round(bbox.y / me.diagram.options.raster) * me.diagram.options.raster;
-            //
-            //     this.transform({'x': x, 'y': y});
-            // }
+                // if (me.diagram.options.raster > 0) {
+                //     var bbox = this.bbox();
+                //
+                //     var x = Math.round(bbox.x / me.diagram.options.raster) * me.diagram.options.raster;
+                //     var y = Math.round(bbox.y / me.diagram.options.raster) * me.diagram.options.raster;
+                //
+                //     this.transform({'x': x, 'y': y});
+                // }
 
-            me.diagram.wire.redrawWires(me.registry);
+                me.diagram.wire.redrawWires(me.registry);
+            }
         }
 
         var rect = new paper.Path.Rectangle({
@@ -208,12 +213,6 @@
         }
         rect.onDoubleClick = function(event) {
             me.onDblClick(event);
-        }
-        rect.onMouseEnter = function(event) {
-            document.body.style.cursor = 'pointer';
-        }
-        rect.onMouseLeave = function(event) {
-            document.body.style.cursor = 'default';
         }
 
         var text = new paper.PointText({

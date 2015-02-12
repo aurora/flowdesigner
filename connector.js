@@ -151,23 +151,23 @@
             this.cn.onMouseLeave = function(event) {
                 document.body.style.cursor = 'default';
             };
-            this.cn.onMouseDown = function(event) {
-                event.stopPropagation();
-            }
+            // this.cn.onMouseDown = function(event) {
+            //     event.stopPropagation();
+            // }
 
             var tool = new paper.Tool();
             var drag = false;
             tool.onMouseDown = function(event) {
-                if (me.cn.hitTest(event.point, {segments: false, stroke: false, fill: true, tolerance: 0})) {
+                if (!event.event.shiftKey && me.cn.hitTest(event.point, {segments: false, stroke: false, fill: true, tolerance: 0})) {
                     drag = true;
                     me.onDragStart(event);
                 }
             }
             tool.onMouseDrag = function(event) {
-                event.stopPropagation();
-
                 if (drag) {
                     me.onDrag(event);
+
+                    event.stopPropagation();
                 }
             }
             tool.onMouseUp = function(event) {
