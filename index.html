@@ -16,16 +16,52 @@
         require(['flowdesigner'], function(diagram) {
             var d = new diagram('canvas');
 
-            d.addScope('image', {
+            d.defineScope('image', {
                 'color': '#00aa00'
             });
-            d.addScope('ctrl', {
+            d.defineScope('ctrl', {
                 'color': '#aaaaff'
             });
-            d.addScope('video', {
+            d.defineScope('video', {
                 'color': '#aaaa00'
             });
 
+            d.defineNode('node_test', {
+                'input': [
+                    {
+                        'name': 'in-1',
+                        'label': 'Image',
+                        'scope': 'image'
+                    },
+                    {
+                        'name': 'in-2',
+                        'label': 'Control',
+                        'scope': 'ctrl'
+                    }
+                ],
+                'output': [
+                    {'name': 'out-1', 'label': 'Image', 'scope': 'image'},
+                    {'name': 'out-2', 'label': 'Control', 'scope': 'ctrl'}
+                ]
+            });
+            d.defineNode('node_test2', {
+                'color': '#550000',
+                'input': [
+                    {
+                        'name': 'in-1',
+                        'label': 'Image',
+                        'scope': 'image'
+                    },
+                    {
+                        'name': 'in-2',
+                        'label': 'Watermark',
+                        'scope': 'image'
+                    }
+                ],
+                'output': [
+                    {'name': 'out-1', 'label': 'Image', 'scope': 'image'}
+                ]
+            });
 
             d.addNodes(
                 [{"node":"node_test","name":"node-1","label":"Node #1","id":"node-1","x":125,"y":35},{"node":"node_test","name":"node-2","label":"Node #2","id":"node-2","x":426,"y":142},{"node":"node_test2","name":"node-3","label":"Node #3","id":"node-3","x":725,"y":35}]
