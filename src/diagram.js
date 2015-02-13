@@ -288,5 +288,29 @@ define(function(require) {
         });
     }
 
+    /**
+     * Remove multiple nodes.
+     *
+     * @param   array       ids                 Array of IDs of nodes to remove.
+     */
+    diagram.prototype.removeNodes = function(ids)
+    {
+        ids.forEach(function(id) {
+            this.removeNode(id);
+        }, this);
+    }
+
+    /**
+     * Remove all nodes from diagram.
+     */
+    diagram.prototype.removeAllNodes = function()
+    {
+        this.nodes = this.nodes.filter(function(node) {
+            node.destroy();
+
+            return false;
+        });
+    }
+
     return diagram;
 });
