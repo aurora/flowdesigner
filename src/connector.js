@@ -143,26 +143,26 @@ define(function(require) {
 
         if (this.type == 'output') {
             var tool = new paper.Tool();
+            var drag = false;
 
             this.cn.onMouseEnter = function(event) {
                 document.body.style.cursor = 'crosshair';
-                tool.activate();
             };
             this.cn.onMouseLeave = function(event) {
                 document.body.style.cursor = 'default';
             };
             this.cn.onMouseDown = function(event) {
+                if (!event.event.shiftKey && me.cn.hitTest(event.point, {segments: false, stroke: false, fill: true, tolerance: 0})) {
+                    drag = true;
+                    
+                    tool.activate();
+                    
+                    me.onDragStart(event);
+                }
+                
                 event.stopPropagation();
             }
 
-            var tool = new paper.Tool();
-            var drag = false;
-            tool.onMouseDown = function(event) {
-                if (!event.event.shiftKey && me.cn.hitTest(event.point, {segments: false, stroke: false, fill: true, tolerance: 0})) {
-                    drag = true;
-                    me.onDragStart(event);
-                }
-            }
             tool.onMouseDrag = function(event) {
                 if (drag) {
                     me.onDrag(event);
