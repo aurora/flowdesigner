@@ -10,6 +10,5 @@ define(function(require) {
 
     var diagram = require('./src/diagram');
 
-    //Return the module value.
     return diagram;
 });
