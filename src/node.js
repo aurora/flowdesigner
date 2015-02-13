@@ -153,19 +153,9 @@ define(function(require) {
 
     /**
      * Render node.
-     *
-     * @param   object          pos                 Optional {x: x, y: y} pair to use for rendering instead of in data provided x,y values.
      */
     node.prototype.render = function(pos)
     {
-        if (typeof pos !== 'undefined' && 'x' in pos && 'y' in pos) {
-            this.data.x = pos.x;
-            this.data.y = pos.y;
-        } else if (!('y' in this.data && 'x' in this.data)) {
-            this.data.x = 0;
-            this.data.y = 0;
-        }
-
         // render node
         var layer = this.diagram.getLayer('nodes');
 
@@ -195,12 +185,12 @@ define(function(require) {
                     var y = Math.round(pos.y / me.diagram.options.raster) * me.diagram.options.raster;
 
                     this.translate(x - me.data.x, y - me.data.y);
-                    
+
                     me.data.x = x;
                     me.data.y = y;
                 } else {
                     this.translate(event.delta.x, event.delta.y);
-                    
+
                     me.data.x = pos.x;
                     me.data.y = pos.y;
                 }

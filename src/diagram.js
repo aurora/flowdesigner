@@ -38,7 +38,6 @@ define(function(require) {
         this.canvas = paper.setup(canvas);
         this.options = this.extend({'raster': 10}, options || {});
         this.nodes = [];
-        this.wires = [];
         this.scopes = {};
         this.registry = {};
 
@@ -238,10 +237,13 @@ define(function(require) {
     diagram.prototype.addNode = function(data)
     {
         if (typeof this.registry[data.node] == 'undefined') {
-            return;
+            throw new Error('Unknown node "' + data.node + '"')
         }
 
-        this.nodes.push(new this.registry[data.node](this, data));
+        var node = new this.registry[data.node](this, data);
+        node.render();
+
+        this.nodes.push(node);
     }
 
     /**
@@ -251,7 +253,9 @@ define(function(require) {
      */
     diagram.prototype.addWires = function(wires)
     {
-        this.wires = this.wires.concat(wires);
+        wires.forEach(function(wire) {
+            this.addWire(wire);
+        }, this);
     }
 
     /**
@@ -261,7 +265,7 @@ define(function(require) {
      */
     diagram.prototype.addWire = function(wire)
     {
-        this.wires.push(wire);
+        this.wire.addWire(wire.source, wire.target);
     }
 
     /**
@@ -282,67 +286,6 @@ define(function(require) {
 
             return ret;
         });
-    }
-
-    /**
-     * Render diagram and wire all nodes as specified.
-     */
-    diagram.prototype.render = function()
-    {
-        // determine if dagre should be used for layouting
-        var use_dagre = false;
-
-        if (typeof dagre !== 'undefined') {
-            for (var i = 0, rect = null, cnt = this.nodes.length; i < cnt; ++i) {
-                rect = this.nodes[i].getRect();
-
-                if ((use_dagre = (rect.x === null || rect.y === null))) {
-                    break;
-                }
-            }
-        }
-
-        if (use_dagre) {
-            // render nodes with calculated graph layout using dagre library
-            var g = new dagre.graphlib.Graph();
-
-            g.setGraph({'rankdir': 'LR'});
-            g.setDefaultEdgeLabel(function() { return {}; });
-
-            this.nodes.forEach(function(node) {
-                var rect = node.getRect();
-
-                g.setNode(node.getId(), {'width': rect.width, 'height': rect.height});
-            });
-
-            this.wires.forEach(function(wire) {
-                var source = this.wire.registry[wire.source];
-                var target = this.wire.registry[wire.target];
-
-                g.setEdge(source.getNode().getId(), target.getNode().getId());
-            }, this);
-
-            dagre.layout(g);
-
-            this.nodes.forEach(function(node) {
-                var rect = g.node(node.getId());
-
-                node.render({'x': rect.x, 'y': rect.y});
-            }, this);
-        } else {
-            // render without using dagre
-            this.nodes.forEach(function(node) {
-                node.render();
-            });
-        }
-
-        // render wires
-        this.wires.forEach(function(wire) {
-            this.wire.addWire(wire.source, wire.target);
-        }, this);
-
-        //
-        paper.view.draw();
     }
 
     return diagram;
