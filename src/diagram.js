@@ -132,10 +132,8 @@ define(function(require) {
         def_node.prototype.constructor = def_node;
 
         def_node.prototype.onClick = function(d) {
-            console.log('click', d);
         }
         def_node.prototype.onDblClick = function(d) {
-            console.log('dblclick', d);
         }
         def_node.prototype.node_input = def.input;
         def_node.prototype.node_output = def.output;
