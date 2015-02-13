@@ -172,6 +172,12 @@ define(function(require) {
         var cn = Math.max(this.node_input.length, this.node_output.length);
         var me = this;
         var drag = false;
+        var rect;
+
+        var pos = {
+            x: this.data.x,
+            y: this.data.y
+        };
 
         this.node = new paper.Group();
         this.node.onMouseDown = function(event) {
@@ -181,25 +187,29 @@ define(function(require) {
         }
         this.node.onMouseDrag = function(event) {
             if (drag) {
-                me.data.x += event.delta.x;
-                me.data.y += event.delta.y;
+                pos.x += event.delta.x;
+                pos.y += event.delta.y;
 
-                this.translate(event.delta.x, event.delta.y);
+                if (me.diagram.options.raster > 0) {
+                    var x = Math.round(pos.x / me.diagram.options.raster) * me.diagram.options.raster;
+                    var y = Math.round(pos.y / me.diagram.options.raster) * me.diagram.options.raster;
 
-                // if (me.diagram.options.raster > 0) {
-                //     var bbox = this.bbox();
-                //
-                //     var x = Math.round(bbox.x / me.diagram.options.raster) * me.diagram.options.raster;
-                //     var y = Math.round(bbox.y / me.diagram.options.raster) * me.diagram.options.raster;
-                //
-                //     this.transform({'x': x, 'y': y});
-                // }
+                    this.translate(x - me.data.x, y - me.data.y);
+                    
+                    me.data.x = x;
+                    me.data.y = y;
+                } else {
+                    this.translate(event.delta.x, event.delta.y);
+                    
+                    me.data.x = pos.x;
+                    me.data.y = pos.y;
+                }
 
                 me.diagram.wire.redrawWires(me.registry);
             }
         }
 
-        var rect = new paper.Path.Rectangle({
+        rect = new paper.Path.Rectangle({
             point: [0, 0],
             size: [this.node_width, this.node_height + cn * this.node_line_height],
             radius: 5,
