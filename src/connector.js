@@ -146,7 +146,9 @@ define(function(require) {
             var drag = false;
 
             this.cn.onMouseEnter = function(event) {
-                document.body.style.cursor = 'crosshair';
+                if (!event.event.shiftKey) {
+                    document.body.style.cursor = 'crosshair';
+                }
             };
             this.cn.onMouseLeave = function(event) {
                 document.body.style.cursor = 'default';
