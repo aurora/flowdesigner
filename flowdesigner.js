@@ -8,7 +8,7 @@
 define(function(require) {
     'use strict';
 
-    var diagram = require('src/diagram');
+    var diagram = require('./src/diagram');
 
     //Return the module value.
     return diagram;
