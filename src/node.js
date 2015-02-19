@@ -20,7 +20,7 @@ define(function(require) {
     {
         this.diagram = dia;
 
-        this.data = this.diagram.extend({}, data);
+        this.data = $.extend({}, data);
         this.node = null;
 
         this.registry = [];
@@ -131,7 +131,7 @@ define(function(require) {
      */
     node.prototype.getData = function()
     {
-        return this.diagram.extend({}, this.data);
+        return $.extend({}, this.data);
     }
 
     /**

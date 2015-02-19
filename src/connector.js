@@ -17,7 +17,7 @@ define(function(require) {
     {
         this.type = type;
         this.node = node;
-        this.data = this.node.diagram.extend({}, data || {});
+        this.data = $.extend({}, data || {});
 
         this.connections = {};
 
@@ -156,12 +156,12 @@ define(function(require) {
             this.cn.onMouseDown = function(event) {
                 if (!event.event.shiftKey && me.cn.hitTest(event.point, {segments: false, stroke: false, fill: true, tolerance: 0})) {
                     drag = true;
-                    
+
                     tool.activate();
-                    
+
                     me.onDragStart(event);
                 }
-                
+
                 event.stopPropagation();
             }
 

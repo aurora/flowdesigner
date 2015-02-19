@@ -100,22 +100,6 @@ define(function(require) {
     }
 
     /**
-     * Helper method to create shallow copies of objects.
-     *
-     * @param   object      origin              Object to extend.
-     * @param   object      add                 Object with properties to add.
-     */
-    diagram.prototype.extend = function(origin, add) {
-        if (typeof add === 'object') {
-            Object.keys(add).forEach(function(k) {
-                origin[k] = add[k];
-            });
-        }
-
-        return origin;
-    };
-
-    /**
      * Define a node.
      *
      * @param   string      name                Name of node to define.
