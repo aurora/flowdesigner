@@ -107,6 +107,13 @@ define(function(require) {
      */
     diagram.prototype.defineNode = function(name, def)
     {
+        var _def = $.extend({
+            input: [],
+            output: [],
+            onClick: function() {},
+            onDblClick: function() {}
+        }, def);
+
         function def_node(dia, data) {
             node.call(this, dia, data);
         }
@@ -114,14 +121,12 @@ define(function(require) {
         def_node.prototype = Object.create(node.prototype);
         def_node.prototype.constructor = def_node;
 
-        def_node.prototype.onClick = function(d) {
-        }
-        def_node.prototype.onDblClick = function(d) {
-        }
-        def_node.prototype.node_input = def.input;
-        def_node.prototype.node_output = def.output;
+        def_node.prototype.onClick = _def.onClick;
+        def_node.prototype.onDblClick = _def.onDblClick;
+        def_node.prototype.node_input = _def.input;
+        def_node.prototype.node_output = _def.output;
 
-        if (typeof def['color'] !== 'undefined') {
+        if (typeof _def['color'] !== 'undefined') {
             def_node.prototype.node_color = def['color'];
         }
 
