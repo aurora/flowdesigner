@@ -76,7 +76,7 @@ define(function(require) {
                             : 'white');
 
         wire.onMouseEnter = function(event) {
-            document.body.style.cursor = 'pointer';
+            document.body.style.cursor = 'not-allowed';
         }
         wire.onMouseLeave = function(event) {
             document.body.style.cursor = 'default';
@@ -88,6 +88,16 @@ define(function(require) {
         var key = [source.getId(), target.getId()].sort().join('-');
 
         this.wires[key] = {'source': source, 'target': target, 'wire': wire};
+
+        var me = this;
+
+        wire.onClick = function(event) {
+            source.removeConnection(target);
+            target.removeConnection(source);
+
+            me.wires[key].wire.remove();
+            delete me.wires[key];
+        }
     }
 
     /**
