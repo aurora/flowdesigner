@@ -110,6 +110,7 @@ define(function(require) {
         var _def = $.extend({
             input: [],
             output: [],
+            color: node.prototype.node_color,
             onClick: function() {},
             onDblClick: function() {}
         }, def);
@@ -125,10 +126,7 @@ define(function(require) {
         def_node.prototype.onDblClick = _def.onDblClick;
         def_node.prototype.node_input = _def.input;
         def_node.prototype.node_output = _def.output;
-
-        if (typeof _def['color'] !== 'undefined') {
-            def_node.prototype.node_color = def['color'];
-        }
+        def_node.prototype.node_color = _def.color;
 
         this.registry[name] = def_node;
     }
