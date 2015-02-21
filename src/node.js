@@ -241,9 +241,11 @@ define(function(require) {
 
         bclose.onMouseEnter = function() {
             this.set({opacity: 1});
+            document.body.style.cursor = 'pointer';
         }
         bclose.onMouseLeave = function() {
             this.set({opacity: 0.5});
+            document.body.style.cursor = 'default';
         }
         bclose.onClick = function() {
             me.diagram.removeNode(me.data.id);
