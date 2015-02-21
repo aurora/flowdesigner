@@ -36,7 +36,7 @@ define(function(require) {
     function diagram(canvas, options)
     {
         this.canvas = paper.setup(canvas);
-        this.options = this.extend({'raster': 10}, options || {});
+        this.options = $.extend({'raster': 0}, options || {});
         this.nodes = [];
         this.scopes = {};
         this.registry = {};
