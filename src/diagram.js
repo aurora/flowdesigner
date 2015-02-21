@@ -134,6 +134,21 @@ define(function(require) {
     }
 
     /**
+     * Register a node node-derived class with specified name.
+     *
+     * @param   string      name                Name of node to register.
+     * @param   string      node_subclass       Node class to register.
+     */
+    diagram.prototype.registerNode = function(name, node_subclass)
+    {
+        if (!node.prototype.isPrototypeOf(test.prototype)) {
+            throw new Error('Invalid parameter specified');
+        }
+
+        this.registry[name] = node_subclass;
+    }
+
+    /**
      * Define a connector scope.
      *
      * @param   string      name                Name of scope.
