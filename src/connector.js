@@ -154,7 +154,7 @@ define(function(require) {
                 document.body.style.cursor = 'default';
             };
             this.cn.onMouseDown = function(event) {
-                if (!event.event.shiftKey && me.cn.hitTest(event.point, {segments: false, stroke: false, fill: true, tolerance: 0})) {
+                if (!event.event.shiftKey && event.event.button == 0 && me.cn.hitTest(event.point, {segments: false, stroke: false, fill: true, tolerance: 0})) {
                     drag = true;
 
                     tool.activate();
