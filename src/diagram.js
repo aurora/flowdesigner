@@ -49,6 +49,11 @@ define(function(require) {
 
         this.wire = new wire(this);
 
+        // disable context menu
+        $('#' + canvas).bind('contextmenu', function() {
+            return false;
+        });
+
         // zoom
         $('#' + canvas).mousewheel(function(event) {
             var pos = paper.view.viewToProject(new paper.Point(event.offsetX, event.offsetY));
