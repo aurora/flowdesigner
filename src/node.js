@@ -249,8 +249,10 @@ define(function(require) {
             this.set({opacity: 0.5});
             document.body.style.cursor = 'default';
         }
-        bclose.onClick = function() {
-            me.diagram.removeNode(me.data.id);
+        bclose.onClick = function(event) {
+            if (event.event.button == 0) {
+                me.diagram.removeNode(me.data.id);
+            }
         }
 
         // render connectors
