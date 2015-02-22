@@ -171,8 +171,10 @@ define(function(require) {
 
         this.node = new paper.Group();
         this.node.onMouseDown = function(event) {
-            if ((drag = !event.event.shiftKey)) {
+            if (!event.event.shiftKey) {
                 this.bringToFront();
+
+                drag = (event.event.button == 0);
             }
         }
         this.node.onMouseDrag = function(event) {
