@@ -92,11 +92,13 @@ define(function(require) {
         var me = this;
 
         wire.onClick = function(event) {
-            source.removeConnection(target);
-            target.removeConnection(source);
+            if (event.event.button == 0) {
+                source.removeConnection(target);
+                target.removeConnection(source);
 
-            me.wires[key].wire.remove();
-            delete me.wires[key];
+                me.wires[key].wire.remove();
+                delete me.wires[key];
+            }
         }
     }
 
