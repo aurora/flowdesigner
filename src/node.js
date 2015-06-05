@@ -5,8 +5,8 @@
  * @author      Harald Lapp <harald@octris.org>
  */
 
-define(function(require) {
-    var connector = require('./connector');
+;(function(flowdesigner) {
+    var connector = flowdesigner.connector;
 
     var id = 0;
 
@@ -281,5 +281,5 @@ define(function(require) {
     node.prototype.onDblClick = function(d) {
     }
 
-    return node;
-});
+    flowdesigner.node = node;
+})(flowdesigner);

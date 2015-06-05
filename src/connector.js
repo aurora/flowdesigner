@@ -5,7 +5,7 @@
  * @author      Harald Lapp <harald@octris.org>
  */
 
-define(function(require) {
+;(function(flowdesigner) {
     /**
      * Constructor.
      *
@@ -221,5 +221,5 @@ define(function(require) {
     {
     }
 
-    return connector;
-});
+    flowdesigner.connector = connector;
+})(flowdesigner);

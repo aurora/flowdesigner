@@ -5,7 +5,7 @@
  * @author      Harald Lapp <harald@octris.org>
  */
 
-define(function(require) {
+;(function(flowdesigner) {
     /**
      * Calculate bezier wire path.
      */
@@ -282,5 +282,5 @@ define(function(require) {
         }
     })();
 
-    return wire;
-});
+    flowdesigner.wire = wire;
+})(flowdesigner);

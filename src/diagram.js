@@ -5,9 +5,9 @@
  * @author      Harald Lapp <harald@octris.org>
  */
 
-define(function(require) {
-    var wire = require('./wire'),
-        node = require('./node');
+;(function(flowdesigner) {
+    var wire = flowdesigner.wire;
+    var node = flowdesigner.node;
 
     /*
      * zoom inspired by StableZoom
@@ -319,5 +319,5 @@ define(function(require) {
         });
     }
 
-    return diagram;
-});
+    flowdesigner.diagram = diagram;
+})(flowdesigner);

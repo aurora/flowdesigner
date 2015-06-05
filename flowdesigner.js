@@ -5,10 +5,17 @@
  * @author      Harald Lapp <harald@octris.org>
  */
 
-define(function(require) {
-    'use strict';
+;(function() {
+    /**
+     * Constructor, create new diagram.
+     *
+     * @param   mixed       canvas              Canvas selector.
+     * @param   object      options             Optional options.
+     */
+    function flowdesigner(canvas, options)
+    {
+        return new flowdesigner.diagram(canvas, options);
+    }
 
-    var diagram = require('./src/diagram');
-
-    return diagram;
-});
+    window.flowdesigner = flowdesigner;
+})();
