@@ -63,13 +63,7 @@
             d.addWires(
     [{"source":"node-1-out-1","target":"node-2-in-1"},{"source":"node-1-out-2","target":"node-2-in-2"},{"source":"node-1-out-1","target":"node-3-in-1"},{"source":"node-2-out-1","target":"node-3-in-2"}]
             );
-
-            function ex() {
-                console.log(JSON.stringify(d.exportNodes()));
-                console.log(JSON.stringify(d.exportWires()));
-            }
         })();
         </script>
-        <input type="button" value="Export" onclick="ex();" />
     </body>
 </html>
