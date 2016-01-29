@@ -20,7 +20,9 @@
     {
         this.diagram = dia;
 
-        this.data = $.extend({}, data);
+        this.data = $.extend({
+            
+        }, data);
         this.node = null;
 
         this.registry = [];
@@ -80,11 +82,39 @@
     node.prototype.node_line_height = 15;
 
     /**
-     * Default node color.
+     * Default node border color.
+     *
+     * @type    string
+     */
+    node.prototype.node_border_color = 'black';
+
+    /**
+     * Default node background color.
      *
      * @type    string
      */
     node.prototype.node_color = '#000055';
+
+    /**
+     * Default node text color.
+     *
+     * @type    string
+     */
+    node.prototype.node_font_color = 'white';
+
+    /**
+     * Default font family.
+     *
+     * @type    string
+     */
+    node.prototype.node_font_family = 'Verdana, Arial, Helvetica, Sans-Serif';
+
+    /**
+     * Default font size.
+     *
+     * @type    int
+     */
+    node.prototype.node_font_size = 12;
 
     /**
      * Default node opacity.
@@ -205,7 +235,7 @@
             point: [0, 0],
             size: [this.node_width, this.node_height + cn * this.node_line_height],
             radius: 5,
-            strokeColor: 'black',
+            strokeColor: this.node_border_color,
             fillColor: this.node_color,
             opacity: this.node_opacity
         });
@@ -222,9 +252,9 @@
         var text = new paper.PointText({
             point: [5, 15],
             content: this.data.label,
-            fillColor: 'white',
-            fontFamily: 'Verdana, Arial, Helvetica, Sans-Serif',
-            fontSize: 12
+            fillColor: this.node_font_color,
+            fontFamily: this.node_font_family,
+            fontSize: this.node_font_size
         });
 
         this.node.addChild(text);
@@ -232,9 +262,9 @@
         var bclose = new paper.PointText({
             point: [this.node_width - 5, 15],
             content: '\u00D7',
-            fillColor: 'white',
-            fontFamily: 'Verdana, Arial, Helvetica, Sans-Serif',
-            fontSize: 12,
+            fillColor: this.node_font_color,
+            fontFamily: this.node_font_family,
+            fontSize: this.node_font_size,
             justification: 'right',
             opacity: 0.5
         });

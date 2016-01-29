@@ -115,7 +115,9 @@
         var _def = $.extend({
             input: [],
             output: [],
+            border_color: node.prototype.node_border_color,
             color: node.prototype.node_color,
+            font_color: node.prototype.node_font_color,
             onClick: function() {},
             onDblClick: function() {}
         }, def);
@@ -132,6 +134,8 @@
         def_node.prototype.node_input = _def.input;
         def_node.prototype.node_output = _def.output;
         def_node.prototype.node_color = _def.color;
+        def_node.prototype.node_border_color = _def.border_color;
+        def_node.prototype.node_font_color = _def.font_color;
 
         this.registry[name] = def_node;
     }

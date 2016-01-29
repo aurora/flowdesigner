@@ -136,9 +136,9 @@
         var label = new paper.PointText({
             point: [(this.type == 'output' ? x - 10 : x + 10), y + 5],
             content: this.data.label,
-            fillColor: 'white',
-            fontFamily: 'Verdana, Arial, Helvetica, Sans-Serif',
-            fontSize: 12,
+            fillColor: this.node.node_font_color,
+            fontFamily: this.node.node_font_family,
+            fontSize: this.node.node_font_size,
             justification: (this.type == 'output' ? 'right' : 'left')
         });
 
