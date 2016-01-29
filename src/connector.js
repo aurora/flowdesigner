@@ -29,6 +29,9 @@
         if (!('scope' in this.data)) {
             this.data.scope = '';
         }
+        if (!('label' in this.data)) {
+            this.data.label = '';
+        }
     }
 
     /**
