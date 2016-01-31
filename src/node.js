@@ -75,6 +75,13 @@
     node.prototype.node_height = 40;
 
     /**
+     * Whether node has a 'remove' button.
+     *
+     * @type    bool
+     */
+    node.prototype.node_can_remove = true;
+
+    /**
      * Line height for title and connectors in node.
      *
      * @type    int
@@ -259,17 +266,19 @@
 
         this.node.addChild(text);
 
-        var bclose = new paper.PointText({
-            point: [this.node_width - 5, 15],
-            content: '\u00D7',
-            fillColor: this.node_font_color,
-            fontFamily: this.node_font_family,
-            fontSize: this.node_font_size,
-            justification: 'right',
-            opacity: 0.5
-        });
+        if (this.node_can_remove) {
+            var bclose = new paper.PointText({
+                point: [this.node_width - 5, 15],
+                content: '\u00D7',
+                fillColor: this.node_font_color,
+                fontFamily: this.node_font_family,
+                fontSize: this.node_font_size,
+                justification: 'right',
+                opacity: 0.5
+            });
 
-        this.node.addChild(bclose);
+            this.node.addChild(bclose);
+        }
 
         bclose.onMouseEnter = function() {
             this.set({opacity: 1});
