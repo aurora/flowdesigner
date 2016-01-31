@@ -21,7 +21,7 @@
         this.diagram = dia;
 
         this.data = $.extend({
-            
+
         }, data);
         this.node = null;
 
@@ -278,19 +278,19 @@
             });
 
             this.node.addChild(bclose);
-        }
 
-        bclose.onMouseEnter = function() {
-            this.set({opacity: 1});
-            document.body.style.cursor = 'pointer';
-        }
-        bclose.onMouseLeave = function() {
-            this.set({opacity: 0.5});
-            document.body.style.cursor = 'default';
-        }
-        bclose.onClick = function(event) {
-            if (event.event.button == 0) {
-                me.diagram.removeNode(me.data.id);
+            bclose.onMouseEnter = function() {
+                this.set({opacity: 1});
+                document.body.style.cursor = 'pointer';
+            }
+            bclose.onMouseLeave = function() {
+                this.set({opacity: 0.5});
+                document.body.style.cursor = 'default';
+            }
+            bclose.onClick = function(event) {
+                if (event.event.button == 0) {
+                    me.diagram.removeNode(me.data.id);
+                }
             }
         }
 
