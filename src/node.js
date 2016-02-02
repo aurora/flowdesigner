@@ -250,6 +250,12 @@
         this.node.addChild(rect);
 
         rect.onMouseDown = function(event) {
+            this._project.selectedItems.forEach(function(node) {
+                node.selected = false;
+            });
+        
+            rect.selected = true;
+
             me.onMouseDown(event);
         }
         rect.onMouseUp = function(event) {            
