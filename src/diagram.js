@@ -119,6 +119,7 @@
             color: node.prototype.node_color,
             font_color: node.prototype.node_font_color,
             can_remove: true,
+            width: 250,
             onClick: function() {},
             onDblClick: function() {}
         }, def);
@@ -138,6 +139,7 @@
         def_node.prototype.node_border_color = _def.border_color;
         def_node.prototype.node_font_color = _def.font_color;
         def_node.prototype.node_can_remove = _def.can_remove;
+        def_node.prototype.node_width = _def.width;
 
         this.registry[name] = def_node;
     }
