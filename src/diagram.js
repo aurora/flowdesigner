@@ -120,6 +120,8 @@
             font_color: node.prototype.node_font_color,
             can_remove: true,
             width: 250,
+            onMouseDown: function() {},
+            onMouseUp: function() {},
             onClick: function() {},
             onDblClick: function() {}
         }, def);
@@ -131,6 +133,8 @@
         def_node.prototype = Object.create(node.prototype);
         def_node.prototype.constructor = def_node;
 
+        def_node.prototype.onMouseDown = _def.onMouseDown;
+        def_node.prototype.onMouseUp = _def.onMouseUp;
         def_node.prototype.onClick = _def.onClick;
         def_node.prototype.onDblClick = _def.onDblClick;
         def_node.prototype.node_input = _def.input;

@@ -249,6 +249,12 @@
 
         this.node.addChild(rect);
 
+        rect.onMouseDown = function(event) {
+            me.onMouseDown(event);
+        }
+        rect.onMouseUp = function(event) {            
+            me.onMouseUp(event);
+        }
         rect.onClick = function(event) {
             me.onClick(event);
         }
@@ -315,6 +321,10 @@
     /*
      * Event handlers to be overwritten by child classes.
      */
+    node.prototype.onMouseDown = function(d) {
+    }
+    node.prototype.onMouseUp = function(d) {
+    }
     node.prototype.onClick = function(d) {
     }
     node.prototype.onDblClick = function(d) {
