@@ -28,17 +28,17 @@
                     {
                         'name': 'in-1',
                         'label': 'Image',
-                        'scope': 'image'
+                        'scopes': ['image']
                     },
                     {
                         'name': 'in-2',
                         'label': 'Control',
-                        'scope': 'ctrl'
+                        'scopes': ['ctrl']
                     }
                 ],
                 'output': [
-                    {'name': 'out-1', 'label': 'Image', 'scope': 'image'},
-                    {'name': 'out-2', 'label': 'Control', 'scope': 'ctrl'}
+                    {'name': 'out-1', 'label': 'Image', 'scopes': ['image']},
+                    {'name': 'out-2', 'label': 'Control', 'scopes': ['ctrl']}
                 ]
             });
             d.defineNode('node_test2', {
@@ -47,16 +47,16 @@
                     {
                         'name': 'in-1',
                         'label': 'Image',
-                        'scope': 'image'
+                        'scopes': ['image']
                     },
                     {
                         'name': 'in-2',
                         'label': 'Watermark',
-                        'scope': 'image'
+                        'scopes': ['image']
                     }
                 ],
                 'output': [
-                    {'name': 'out-1', 'label': 'Image', 'scope': 'image'}
+                    {'name': 'out-1', 'label': 'Image', 'scopes': ['image']}
                 ]
             });
 
