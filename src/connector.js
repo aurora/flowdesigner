@@ -26,8 +26,8 @@
         if (!('id' in this.data)) {
             this.data.id = node.getId() + '-' + this.data.name;
         }
-        if (!('scope' in this.data)) {
-            this.data.scope = '';
+        if (!('scopes' in this.data)) {
+            this.data.scopes = [];
         }
         if (!('label' in this.data)) {
             this.data.label = '';
@@ -77,13 +77,23 @@
     }
 
     /**
-     * Return scope-name of connector.
+     * Test if one of a specified list of scopes is member of the configured scopes.
      *
-     * @return string                           Scope-name of connector.
+     * @param   array                           Names of scopes.
      */
-    connector.prototype.getScope = function()
+    connector.prototype.hasScopes = function(scopes)
     {
-        return this.data.scope;
+        return (this.data.scopes.filter(function(n) { return scopes.indexOf(n) != -1; }).length > 0);
+    }
+
+    /**
+     * Return scope names of connector.
+     *
+     * @return array                            Scope-name of connector.
+     */
+    connector.prototype.getScopes = function()
+    {
+        return this.data.scopes;
     }
 
     /**
@@ -97,7 +107,7 @@
     }
 
     /**
-     * Test if it's allowed to connection two connectors. Connections are only
+     * Test if it's allowed to connect two connectors. Connections are only
      * allowed if both connectors have the same scope and if they are not identical
      * objects.
      *
@@ -105,7 +115,7 @@
      */
     connector.prototype.isAllowed = function(target)
     {
-        return (this.data.scope == target.getScope() &&                     // both connectors of same scope
+        return (target.hasScopes(this.data.scopes) &&                       // both connectors of same scope
                 this.node.getId() != target.getNode().getId() &&            // target and source are not the same node
                 typeof this.connections[target.getId()] === 'undefined');   // connectors not already connected
     }
@@ -120,15 +130,18 @@
     connector.prototype.render = function(parent, x, y)
     {
         var me = this;
+        var color = (this.data.scopes.length > 0
+                        ? '#777777'     // color for multiple possible scopes
+                        : (this.node.diagram.hasScope(this.data.scopes[0])
+                            ? this.node.diagram.getScope(this.data.scopes[0]).color     // color for single known scope
+                            : 'white'));  // color for unknown scope
 
         this.cn = new paper.Path.Circle({
             center: [x, y],
             radius: 6,
             strokeColor: 'black',
             strokeWidth: 2,
-            fillColor: (this.node.diagram.hasScope(this.data.scope)
-                        ? this.node.diagram.getScope(this.data.scope).color
-                        : 'white')
+            fillColor: color
         })
 
         parent.addChild(this.cn);

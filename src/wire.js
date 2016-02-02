@@ -63,17 +63,30 @@
             return;
         }
 
-        var scope = source.getScope();
+        var scopes = (function() {
+            var tmp = target.getScopes();
+            
+            return source.getScopes().filter(function(n) {
+                return tmp.indexOf(n) != -1;
+            });
+        })();
 
+        if (scopes.length == 0) {
+            // this should not happen, because isAllowed should handle this case
+            throw 'Unknown error occured.';
+        }
+        
         var sxy = this.getConnectorCenter(source.cn);
         var txy = this.getConnectorCenter(target.cn);
 
         var layer = this.diagram.getLayer('wires');
         var wire = new paper.Path(calcPath(sxy.x, sxy.y, txy.x, txy.y));
         wire.strokeWidth = 4;
-        wire.strokeColor = (this.diagram.hasScope(scope)
-                            ? this.diagram.getScope(scope).color
-                            : 'white');
+        wire.strokeColor = (scopes.length > 1
+                            ? '#777777'     // multiple scopes could be valid for wire
+                            : (this.diagram.hasScope(scopes[0])
+                                ? this.diagram.getScope(scopes[0]).color   // color of single known scope
+                                : 'black'));    // unknown scope
 
         wire.onMouseEnter = function(event) {
             document.body.style.cursor = 'not-allowed';
