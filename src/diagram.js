@@ -253,6 +253,7 @@
      * Add a single node to diagram.
      *
      * @param   object      data                Node data.
+     * @return  object                          Instance of created node.
      */
     diagram.prototype.addNode = function(data)
     {
@@ -264,6 +265,8 @@
         node.render();
 
         this.nodes.push(node);
+
+        return node;
     }
 
     /**
