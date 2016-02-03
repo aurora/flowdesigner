@@ -22,9 +22,11 @@
 
         this.data = $.extend({
             x: 0,
-            y: 0
+            y: 0,
+            label: ''
         }, data);
         this.node = null;
+        this.label = null;
 
         this.registry = [];
 
