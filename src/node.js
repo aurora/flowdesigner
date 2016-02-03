@@ -192,6 +192,20 @@
     }
 
     /**
+     * Set/change label of node.
+     *
+     * @param   string              label           Label to set.
+     */
+    node.prototype.setLabel = function(label)
+    {
+        this.data.label = label;
+
+        if (this.label != null) {
+            this.label.content = label;
+        }
+    }
+
+    /**
      * Render node.
      */
     node.prototype.render = function(pos)
