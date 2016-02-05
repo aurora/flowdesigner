@@ -1,7 +1,7 @@
 /**
  * Node class.
  *
- * @copyright   copyright (c) 2015 by Harald Lapp
+ * @copyright   copyright (c) 2015-2016 by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
 
@@ -14,61 +14,46 @@
      * Constructor.
      *
      * @param   diagram         diagram             Diagram instance.
-     * @param   object          data                Node configuration.
+     * @param   object          settings            Node configuration settings.
      */
-    function node(dia, data)
+    function node(diagram, settings)
     {
-        this.diagram = dia;
+        this.id = 'node-' + (++id);
+        this.diagram = diagram;
 
-        this.data = $.extend({
-            x: 0,
-            y: 0,
-            label: ''
-        }, data);
+        this.settings = $.extend({
+            x: 0,                   // x-position of node
+            y: 0,                   // y-position of node
+            width: 250,             // width of node
+            color: '#000055',       // background color of node
+            font_color: 'white',    // font color
+            border_color: 'black',  // border color
+            can_remove: true,       // whether node has a 'remove' button
+            label: '',              // label of node
+            description: '',        // node description
+            input: [],              // input connectors
+            output: [],             // output connectors
+        }, settings);
+
         this.node = null;
         this.label = null;
 
-        this.registry = [];
-
-        if (!('id' in this.data)) {
-            this.data.id = 'node-' + (++id);
-        }
+        this.registry = [];     // connector registry
 
         // register input connectors
-        this.node_input.forEach(function(data, idx) {
+        this.settings.input.forEach(function(data, idx) {
             var cn = new connector('input', this, data);
 
             this.registry.push(this.diagram.wire.registerConnector(cn));
         }, this);
 
         // register output connectors
-        this.node_output.forEach(function(data, idx) {
+        this.settings.output.forEach(function(data, idx) {
             var cn = new connector('output', this, data);
 
             this.registry.push(this.diagram.wire.registerConnector(cn));
         }, this);
     }
-
-    /**
-     * Input connectors.
-     *
-     * @type    array
-     */
-    node.prototype.node_input = [];
-
-    /**
-     * Output connectors.
-     *
-     * @type    array
-     */
-    node.prototype.node_output = [];
-
-    /**
-     * Width.
-     *
-     * @type    int
-     */
-    node.prototype.node_width = 250;
 
     /**
      * Default node height.
@@ -78,39 +63,11 @@
     node.prototype.node_height = 40;
 
     /**
-     * Whether node has a 'remove' button.
-     *
-     * @type    bool
-     */
-    node.prototype.node_can_remove = true;
-
-    /**
      * Line height for title and connectors in node.
      *
      * @type    int
      */
     node.prototype.node_line_height = 15;
-
-    /**
-     * Default node border color.
-     *
-     * @type    string
-     */
-    node.prototype.node_border_color = 'black';
-
-    /**
-     * Default node background color.
-     *
-     * @type    string
-     */
-    node.prototype.node_color = '#000055';
-
-    /**
-     * Default node text color.
-     *
-     * @type    string
-     */
-    node.prototype.node_font_color = 'white';
 
     /**
      * Default font family.
@@ -155,23 +112,23 @@
     }
 
     /**
-     * Return ID of node.
+     * Return internal id of node.
      *
-     * @return  string                              ID of node.
+     * @return  string                              Id of node.
      */
     node.prototype.getId = function()
     {
-        return this.data.id;
+        return this.id;
     }
 
     /**
-     * Return node data.
+     * Return node settings.
      *
-     * @return  object                              Node data.
+     * @return  object                              Node settings.
      */
-    node.prototype.getData = function()
+    node.prototype.getSettings = function()
     {
-        return $.extend({}, this.data);
+        return $.extend({}, this.settings);
     }
 
     /**
@@ -181,12 +138,12 @@
      */
     node.prototype.getRect = function()
     {
-        var cn = Math.max(this.node_input.length, this.node_output.length);
+        var cn = Math.max(this.settings.input.length, this.settings.output.length);
 
         return {
-            'x':      (isNaN(this.data.x) ? null : this.data.x),
-            'y':      (isNaN(this.data.y) ? null : this.data.y),
-            'width':  this.node_width,
+            'x':      (isNaN(this.settings.x) ? 0 : this.settings.x),
+            'y':      (isNaN(this.settings.y) ? 0 : this.settings.y),
+            'width':  this.settings.width,
             'height': this.node_height + cn * this.node_line_height
         };
     }
@@ -198,7 +155,7 @@
      */
     node.prototype.setLabel = function(label)
     {
-        this.data.label = label;
+        this.settings.label = label;
 
         if (this.label != null) {
             this.label.content = label;
@@ -213,14 +170,14 @@
         // render node
         var layer = this.diagram.getLayer('nodes');
 
-        var cn = Math.max(this.node_input.length, this.node_output.length);
+        var cn = Math.max(this.settings.input.length, this.settings.output.length);
         var me = this;
         var drag = false;
         var rect;
 
         var pos = {
-            x: this.data.x,
-            y: this.data.y
+            x: this.settings.x,
+            y: this.settings.y
         };
 
         this.node = new paper.Group();
@@ -240,15 +197,15 @@
                     var x = Math.round(pos.x / me.diagram.options.raster) * me.diagram.options.raster;
                     var y = Math.round(pos.y / me.diagram.options.raster) * me.diagram.options.raster;
 
-                    this.translate(x - me.data.x, y - me.data.y);
+                    this.translate(x - me.settings.x, y - me.settings.y);
 
-                    me.data.x = x;
-                    me.data.y = y;
+                    me.settings.x = x;
+                    me.settings.y = y;
                 } else {
                     this.translate(event.delta.x, event.delta.y);
 
-                    me.data.x = pos.x;
-                    me.data.y = pos.y;
+                    me.settings.x = pos.x;
+                    me.settings.y = pos.y;
                 }
 
                 me.diagram.wire.redrawWires(me.registry);
@@ -257,10 +214,10 @@
 
         rect = new paper.Path.Rectangle({
             point: [0, 0],
-            size: [this.node_width, this.node_height + cn * this.node_line_height],
+            size: [this.settings.width, this.node_height + cn * this.node_line_height],
             radius: 5,
-            strokeColor: this.node_border_color,
-            fillColor: this.node_color,
+            strokeColor: this.settings.border_color,
+            fillColor: this.settings.color,
             opacity: this.node_opacity
         });
 
@@ -287,19 +244,19 @@
 
         var text = new paper.PointText({
             point: [5, 15],
-            content: this.data.label,
-            fillColor: this.node_font_color,
+            content: this.settings.label,
+            fillColor: this.settings.font_color,
             fontFamily: this.node_font_family,
             fontSize: this.node_font_size
         });
 
         this.node.addChild(text);
 
-        if (this.node_can_remove) {
+        if (this.settings.can_remove) {
             var bclose = new paper.PointText({
-                point: [this.node_width - 5, 15],
+                point: [this.settings.width - 5, 15],
                 content: '\u00D7',
-                fillColor: this.node_font_color,
+                fillColor: this.settings.font_color,
                 fontFamily: this.node_font_family,
                 fontSize: this.node_font_size,
                 justification: 'right',
@@ -318,7 +275,7 @@
             }
             bclose.onClick = function(event) {
                 if (event.event.button == 0) {
-                    me.diagram.removeNode(me.data.id);
+                    me.diagram.removeNode(me.settings.id);
                 }
             }
         }
@@ -333,12 +290,12 @@
                 cn.render(this.node, 10, this.node_height + idx.input * this.node_line_height);
                 ++idx.input;
             } else {
-                cn.render(this.node, this.node_width - 10, this.node_height + idx.output * this.node_line_height);
+                cn.render(this.node, this.settings.width - 10, this.node_height + idx.output * this.node_line_height);
                 ++idx.output;
             }
         }, this);
 
-        this.node.translate(this.data.x, this.data.y);
+        this.node.translate(this.settings.x, this.settings.y);
     }
 
     /*

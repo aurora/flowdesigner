@@ -37,9 +37,8 @@
     {
         this.canvas = paper.setup(canvas);
         this.options = $.extend({'raster': 0}, options || {});
-        this.nodes = [];
+        this.nodes = {};
         this.scopes = {};
-        this.registry = {};
 
         this.layers = {
             'wires': new this.canvas.Layer(),
@@ -105,72 +104,12 @@
     }
 
     /**
-     * Define a node.
-     *
-     * @param   string      name                Name of node to define.
-     * @param   string      def                 Node definition.
-     */
-    diagram.prototype.defineNode = function(name, def)
-    {
-        var _def = $.extend({
-            input: [],
-            output: [],
-            border_color: node.prototype.node_border_color,
-            color: node.prototype.node_color,
-            font_color: node.prototype.node_font_color,
-            can_remove: true,
-            width: 250,
-            onMouseDown: function() {},
-            onMouseUp: function() {},
-            onClick: function() {},
-            onDblClick: function() {}
-        }, def);
-
-        function def_node(dia, data) {
-            node.call(this, dia, data);
-        }
-
-        def_node.prototype = Object.create(node.prototype);
-        def_node.prototype.constructor = def_node;
-
-        def_node.prototype.onMouseDown = _def.onMouseDown;
-        def_node.prototype.onMouseUp = _def.onMouseUp;
-        def_node.prototype.onClick = _def.onClick;
-        def_node.prototype.onDblClick = _def.onDblClick;
-        def_node.prototype.node_input = _def.input;
-        def_node.prototype.node_output = _def.output;
-        def_node.prototype.node_color = _def.color;
-        def_node.prototype.node_border_color = _def.border_color;
-        def_node.prototype.node_font_color = _def.font_color;
-        def_node.prototype.node_can_remove = _def.can_remove;
-        def_node.prototype.node_width = _def.width;
-
-        this.registry[name] = def_node;
-    }
-
-    /**
-     * Register a node node-derived class with specified name.
-     *
-     * @param   string      name                Name of node to register.
-     * @param   string      node_subclass       Node class to register.
-     */
-    diagram.prototype.registerNode = function(name, node_subclass)
-    {
-        if (!node.prototype.isPrototypeOf(test.prototype)) {
-            throw new Error('Invalid parameter specified');
-        }
-
-        this.registry[name] = node_subclass;
-    }
-
-    /**
      * Define a connector scope.
      *
      * @param   string      name                Name of scope.
      * @param   object      settings            Scope settings.
-     * @param   string      parent              Optional parent scope.
      */
-    diagram.prototype.defineScope = function(name, settings, parent)
+    diagram.prototype.defineScope = function(name, settings)
     {
         this.scopes[name] = settings;
     }
@@ -198,6 +137,28 @@
     }
 
     /**
+     * Test if node of specified Id is available.
+     *
+     * @param   string      id                  Id of node.
+     * @return  bool                            Returns true if node is available.
+     */
+    diagram.prototype.hasNode = function(id)
+    {
+        return (id in this.nodes);
+    }
+
+    /**
+     * Return instance of node.
+     *
+     * @param   string      id                  Id of node to return.
+     * @return  flowdesigner.node               Instance of node.
+     */
+    diagram.prototype.getNode = function(id)
+    {
+        return this.nodes[id];
+    }
+
+    /**
      * Return and activate layer of specified name. Returns the canvas layer, if no layer name
      * is specified.
      *
@@ -216,69 +177,58 @@
     }
 
     /**
-     * Return wires.
+     * Export nodes and wires as json data structure.
      *
-     * @return  array                           Array ofwires.
+     * @return  object                          Defined nodes and wires.
      */
-    diagram.prototype.exportWires = function()
+    diagram.prototype.exportJson = function()
     {
-        return this.wire.exportWires();
-    }
+        var data = {
+            'nodes': [],
+            'wires': []
+        };
 
-    /**
-     * Export nodes.
-     *
-     * @return  array                           Array of nodes.
-     */
-    diagram.prototype.exportNodes = function()
-    {
-        return this.nodes.map(function(node) {
-            return node.getData();
-        });
-    }
-
-    /**
-     * Add multiple nodes.
-     *
-     * @param   array       nodes               Array of nodes.
-     */
-    diagram.prototype.addNodes = function(nodes)
-    {
-        nodes.forEach(function(data) {
-            this.addNode(data);
-        }, this);
-    }
-
-    /**
-     * Add a single node to diagram.
-     *
-     * @param   object      data                Node data.
-     * @return  object                          Instance of created node.
-     */
-    diagram.prototype.addNode = function(data)
-    {
-        if (typeof this.registry[data.node] == 'undefined') {
-            throw new Error('Unknown node "' + data.node + '"')
+        for (var i in this.nodes) {
+            data.nodes.push(this.nodes[i].getData());
         }
 
-        var node = new this.registry[data.node](this, data);
-        node.render();
+        data.wires = this.wire.exportWires();
 
-        this.nodes.push(node);
-
-        return node;
+        return data;
     }
 
     /**
-     * Add multiple wires.
+     * Import json data structure of nodes and wires.
      *
-     * @param   array       wires               Array of wires.
+     * @param   object              data        Data structure to import.
      */
-    diagram.prototype.addWires = function(wires)
+    diagram.prototype.importJson = function(data)
     {
-        wires.forEach(function(wire) {
+        data.nodes.forEach(function(node) {
+            this.addNode()
+        });
+
+        data.wires.forEach(function(wire) {
             this.addWire(wire);
         }, this);
+    }
+
+    /**
+     * Add an instance of a node to the diagram.
+     *
+     * @param   flowdesigner.node   node        Instance of node.
+     * @return  object                          Instance of created node.
+     */
+    diagram.prototype.addNode = function(node)
+    {
+        if (!(node instanceof flowdesigner.node)) {
+            throw new Error('Invalid parameter specified');
+        }
+
+        var id = node.getId();
+        var me = this;
+
+        this.nodes[id] = node;
     }
 
     /**
@@ -298,17 +248,10 @@
      */
     diagram.prototype.removeNode = function(id)
     {
-        this.nodes = this.nodes.filter(function(node) {
-            var ret = true;
+        var node = this.nodes[id];
+        node.destroy();
 
-            if (node.getId() == id) {
-                node.destroy();
-
-                ret = false;
-            }
-
-            return ret;
-        });
+        delete this.nodes[id];
     }
 
     /**
@@ -328,11 +271,7 @@
      */
     diagram.prototype.removeAllNodes = function()
     {
-        this.nodes = this.nodes.filter(function(node) {
-            node.destroy();
-
-            return false;
-        });
+        this.removeNodes(Object.keys(this.nodes));
     }
 
     flowdesigner.diagram = diagram;
