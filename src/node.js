@@ -128,7 +128,7 @@
      */
     node.prototype.getSettings = function()
     {
-        return $.extend({}, this.settings);
+        return $.extend(true, {}, this.settings);
     }
 
     /**
