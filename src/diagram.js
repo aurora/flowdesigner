@@ -189,7 +189,7 @@
         };
 
         for (var i in this.nodes) {
-            data.nodes.push(this.nodes[i].getData());
+            data.nodes.push(this.nodes[i].getSettings());
         }
 
         data.wires = this.wire.exportWires();
