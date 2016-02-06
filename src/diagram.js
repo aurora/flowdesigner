@@ -39,11 +39,19 @@
     /**
      * Constructor.
      *
-     * @param   mixed       canvas              Canvas selector.
-     * @param   object      options             Optional options.
+     * @param   HTMLCanvasElement|string    canvas              Canvas selector.
+     * @param   object                      options             Optional options.
      */
     function diagram(canvas, options)
     {
+        if (typeof canvas === 'string' || Canvas instanceof string) {
+            this.canvas_node = $('#' + canvas);
+        } else if (canvas instanceof HTMLCanvasElement) {
+            this.canvas_node = canvas;
+        } else {
+            throw new Error('Invalid argument, id or instance of HTMLCanvasElement expected');
+        }
+
         this.canvas = paper.setup(canvas);
         this.options = $.extend({'raster': 0}, options || {});
         this.nodes = {};
@@ -58,12 +66,12 @@
         this.wire = new wire(this);
 
         // disable context menu
-        $('#' + canvas).bind('contextmenu', function() {
+        $(this.canvas_node).bind('contextmenu', function() {
             return false;
         });
 
         // zoom
-        $('#' + canvas).mousewheel(function(event) {
+        $(this.canvas_node).mousewheel(function(event) {
             var pos = paper.view.viewToProject(new paper.Point(event.offsetX, event.offsetY));
             var ret = zoom(paper.view.zoom, event.deltaY, paper.view.center, pos);
 
@@ -99,7 +107,7 @@
                 drag = false;
             }
 
-            $('#' + canvas).on({
+            $(this.canvas_node).on({
                 mousedown: function(event) {
                     if (event.shiftKey) {
                         tool.activate();
@@ -109,7 +117,7 @@
                     }
                 }
             });
-        })();
+        }).call(this);
     }
 
     /**
