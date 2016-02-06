@@ -193,12 +193,41 @@
         };
 
         this.node = new paper.Group();
+
+        rect = new paper.Path.Rectangle({
+            point: [0, 0],
+            size: [this.settings.width, this.node_height + cn * this.node_line_height],
+            radius: 5,
+            strokeColor: this.settings.border_color,
+            fillColor: this.settings.color,
+            opacity: this.node_opacity
+        });
+
+        this.node.addChild(rect);
+
         this.node.onMouseDown = function(event) {
             if (!event.event.shiftKey) {
                 this.bringToFront();
 
                 drag = (event.event.button == 0);
+
+                this._project.selectedItems.forEach(function(node) {
+                    node.selected = false;
+                });
+
+                rect.selected = true;
+
+                me.onMouseDown(event);
             }
+        }
+        this.node.onMouseUp = function(event) {
+            me.onMouseUp(event);
+        }
+        this.node.onClick = function(event) {
+            me.onClick(event);
+        }
+        this.node.onDoubleClick = function(event) {
+            me.onDblClick(event);
         }
         this.node.onMouseDrag = function(event) {
             if (drag) {
@@ -222,36 +251,6 @@
 
                 me.diagram.wire.redrawWires(me.registry);
             }
-        }
-
-        rect = new paper.Path.Rectangle({
-            point: [0, 0],
-            size: [this.settings.width, this.node_height + cn * this.node_line_height],
-            radius: 5,
-            strokeColor: this.settings.border_color,
-            fillColor: this.settings.color,
-            opacity: this.node_opacity
-        });
-
-        this.node.addChild(rect);
-
-        rect.onMouseDown = function(event) {
-            this._project.selectedItems.forEach(function(node) {
-                node.selected = false;
-            });
-
-            rect.selected = true;
-
-            me.onMouseDown(event);
-        }
-        rect.onMouseUp = function(event) {
-            me.onMouseUp(event);
-        }
-        rect.onClick = function(event) {
-            me.onClick(event);
-        }
-        rect.onDoubleClick = function(event) {
-            me.onDblClick(event);
         }
 
         var text = new paper.PointText({
