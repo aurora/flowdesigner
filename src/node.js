@@ -22,6 +22,7 @@
         this.diagram = diagram;
 
         this.settings = $.extend({
+            id: this.id,            // id of node
             x: 0,                   // x-position of node
             y: 0,                   // y-position of node
             width: 250,             // width of node
