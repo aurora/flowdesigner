@@ -1,7 +1,16 @@
+/*
+ * This file is part of the 'flowdesigner' package.
+ *
+ * (c) Harald Lapp
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * Connectors class.
  *
- * @copyright   copyright (c) 2015 by Harald Lapp
+ * @copyright   copyright (c) 2015-2016 by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
 
@@ -65,7 +74,7 @@
 
         var scopes = (function() {
             var tmp = target.getScopes();
-            
+
             return source.getScopes().filter(function(n) {
                 return tmp.indexOf(n) != -1;
             });
@@ -75,7 +84,7 @@
             // this should not happen, because isAllowed should handle this case
             throw 'Unknown error occured.';
         }
-        
+
         var sxy = this.getConnectorCenter(source.cn);
         var txy = this.getConnectorCenter(target.cn);
 

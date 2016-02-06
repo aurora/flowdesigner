@@ -1,7 +1,16 @@
+/*
+ * This file is part of the 'flowdesigner' package.
+ *
+ * (c) Harald Lapp
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * Main flow designer class.
  *
- * @copyright   copyright (c) 2015 by Harald Lapp
+ * @copyright   copyright (c) 2015-2016 by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
 
