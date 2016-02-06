@@ -194,6 +194,16 @@
     }
 
     /**
+     * Return data URL of canvas.
+     *
+     * @return  string                          Data URL of canvas.
+     */
+    diagram.prototype.getDataUrl = function()
+    {
+        return this.canvas_node.get(0).toDataURL();
+    }
+
+    /**
      * Export nodes and wires as json data structure.
      *
      * @return  object                          Defined nodes and wires.
