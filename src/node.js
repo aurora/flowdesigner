@@ -124,6 +124,32 @@
     }
 
     /**
+     * Check if node is selected.
+     *
+     * @return  bool                    Returns true if node is selected.
+     */
+    node.prototype.isSelected = function()
+    {
+        return this.node.children[0].selected;
+    }
+
+    /**
+     * Select node.
+     */
+    node.prototype.select = function()
+    {
+        this.node.children[0].selected = true;
+    }
+
+    /**
+     * Unselect node.
+     */
+    node.prototype.unselect = function()
+    {
+        this.node.children[0].selected = false;
+    }
+
+    /**
      * Return internal id of node.
      *
      * @return  string                              Id of node.
@@ -211,11 +237,7 @@
 
                 drag = (event.event.button == 0);
 
-                this._project.selectedItems.forEach(function(node) {
-                    node.selected = false;
-                });
-
-                rect.selected = true;
+                me.diagram.selectNode(me);
 
                 me.onMouseDown(event);
             }

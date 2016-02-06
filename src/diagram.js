@@ -165,6 +165,64 @@
     }
 
     /**
+     * Select a node.
+     *
+     * @param   string|flowdesigner.node    node        Id of node or node instance to select.
+     */
+    diagram.prototype.selectNode = function(node)
+    {
+        this.unselectAllNodes();
+
+        if (typeof node === 'string' || node instanceof String) {
+            if (this.hasNode(node)) {
+                this.getNode(node).select();;
+            }
+        } else if (node instanceof flowdesigner.node) {
+            node.select();
+        } else {
+            throw new Error('Invalid argument, id or instance of flowdesigner.node expected');
+        }
+    }
+
+    /**
+     * Unselect a node.
+     *
+     * @param   string|flowdesigner.node    node        Id of node or node instance to select.
+     */
+    diagram.prototype.unselectNode = function(node)
+    {
+        if (typeof node === 'string' || node instanceof string) {
+            if (this.hasNode(node)) {
+                this.getNode(node).unselect();;
+            }
+        } else if (node instanceof flowdesigner.node) {
+            node.unselect();
+        } else {
+            throw new Error('Invalid argument, id or instance of flowdesigner.node expected');
+        }
+    }
+
+    /**
+     * Unselect all nodes.
+     */
+    diagram.prototype.unselectAllNodes = function()
+    {
+        for (var i in this.nodes) {
+            this.nodes[i].unselect();
+        }
+    }
+
+    /**
+     * Select all nodes.
+     */
+    diagram.prototype.selectAllNodes = function()
+    {
+        for (var i in this.nodes) {
+            this.nodes[i].select();
+        }
+    }
+
+    /**
      * Return instance of node.
      *
      * @param   string      id                  Id of node to return.
