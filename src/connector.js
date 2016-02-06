@@ -139,7 +139,7 @@
     connector.prototype.render = function(parent, x, y)
     {
         var me = this;
-        var color = (this.data.scopes.length > 0
+        var color = (this.data.scopes.length > 1
                         ? '#777777'     // color for multiple possible scopes
                         : (this.node.diagram.hasScope(this.data.scopes[0])
                             ? this.node.diagram.getScope(this.data.scopes[0]).color     // color for single known scope
