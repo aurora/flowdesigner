@@ -42,6 +42,7 @@
 
         // register input connectors
         this.settings.input.forEach(function(data, idx) {
+            data.id = this.id + '-' + data.name;
             var cn = new connector('input', this, data);
 
             this.registry.push(this.diagram.wire.registerConnector(cn));
@@ -49,6 +50,7 @@
 
         // register output connectors
         this.settings.output.forEach(function(data, idx) {
+            data.id = this.id + '-' + data.name;
             var cn = new connector('output', this, data);
 
             this.registry.push(this.diagram.wire.registerConnector(cn));
