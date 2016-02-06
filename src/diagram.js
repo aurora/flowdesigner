@@ -175,7 +175,7 @@
 
         if (typeof node === 'string' || node instanceof String) {
             if (this.hasNode(node)) {
-                this.getNode(node).select();;
+                this.getNode(node).select();
             }
         } else if (node instanceof flowdesigner.node) {
             node.select();
