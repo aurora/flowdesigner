@@ -223,6 +223,24 @@
     }
 
     /**
+     * Return a list of selected nodes.
+     *
+     * @return  array                           List of selected nodes.
+     */
+    diagram.prototype.getSelectedNodes = function()
+    {
+        var selected = [];
+
+        for (var i in this.nodes) {
+            if (this.nodes[i].isSelected()) {
+                selected.push(this.nodes[i]);
+            }
+        }
+
+        return selected;
+    }
+
+    /**
      * Return instance of node.
      *
      * @param   string      id                  Id of node to return.
