@@ -44,7 +44,7 @@
      */
     function diagram(canvas, options)
     {
-        if (typeof canvas === 'string' || Canvas instanceof string) {
+        if (typeof canvas === 'string' || canvas instanceof String) {
             this.canvas_node = $('#' + canvas);
         } else if (canvas instanceof HTMLCanvasElement) {
             this.canvas_node = canvas;
