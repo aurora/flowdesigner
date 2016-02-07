@@ -197,6 +197,8 @@
 
         if (this.label != null) {
             this.label.content = label;
+
+            paper.project.view.update(true);
         }
     }
 
@@ -275,7 +277,7 @@
             }
         }
 
-        var text = new paper.PointText({
+        this.label = new paper.PointText({
             point: [5, 15],
             content: this.settings.label,
             fillColor: this.settings.font_color,
@@ -283,7 +285,7 @@
             fontSize: this.node_font_size
         });
 
-        this.node.addChild(text);
+        this.node.addChild(this.label);
 
         if (this.settings.can_remove) {
             var bclose = new paper.PointText({
