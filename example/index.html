@@ -12,7 +12,7 @@
         <script type="text/javascript">
         ;(function() {
             var d = new flowdesigner('canvas');
-			var n;
+            var n;
 
             d.defineScope('image', {
                 'color': '#00aa00'
@@ -25,9 +25,9 @@
             });
 
             d.addNode(n = new flowdesigner.node(d, {
-				'label': 'Node #1',
-				'x': 125,
-				'y': 35,
+                'label': 'Node #1',
+                'x': 125,
+                'y': 35,
                 'input': [
                     {
                         'name': 'in-1',
@@ -42,24 +42,24 @@
                 ],
                 'output': [
                     {
-						'name': 'out-1',
-						'label': 'Image',
-						'scopes': ['image']
-					},
+                        'name': 'out-1',
+                        'label': 'Image',
+                        'scopes': ['image']
+                    },
                     {
-						'name': 'out-2',
-						'label': 'Control',
-						'scopes': ['ctrl']
-					}
+                        'name': 'out-2',
+                        'label': 'Control',
+                        'scopes': ['ctrl']
+                    }
                 ]
             }));
-			n.render();
-			
+            n.render();
+            
             d.addNode(n = new flowdesigner.node(d, {
-				'label': 'Node #2',
+                'label': 'Node #2',
                 'color': '#550000',
-				'x': 426,
-				'y': 142,
+                'x': 426,
+                'y': 142,
                 'input': [
                     {
                         'name': 'in-1',
@@ -74,19 +74,19 @@
                 ],
                 'output': [
                     {
-						'name': 'out-1',
-						'label': 'Image',
-						'scopes': ['image']
-					}
+                        'name': 'out-1',
+                        'label': 'Image',
+                        'scopes': ['image']
+                    }
                 ]
             }));
-			n.render();
+            n.render();
 
             d.addNode(n = new flowdesigner.node(d, {
-				'label': 'Node #3',
+                'label': 'Node #3',
                 'color': '#55aa00',
-				'x': 725,
-				'y': 35,
+                'x': 725,
+                'y': 35,
                 'input': [
                     {
                         'name': 'in-1',
@@ -95,8 +95,8 @@
                     }
                 ]
             }));
-			n.render();
-		
+            n.render();
+        
 /*            d.addWires(
     [{"source":"node-1-out-1","target":"node-2-in-1"},{"source":"node-1-out-2","target":"node-2-in-2"},{"source":"node-1-out-1","target":"node-3-in-1"},{"source":"node-2-out-1","target":"node-3-in-2"}]
             );*/
