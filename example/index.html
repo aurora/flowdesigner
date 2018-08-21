@@ -12,6 +12,7 @@
         <script type="text/javascript">
         ;(function() {
             var d = new flowdesigner('canvas');
+			var n;
 
             d.defineScope('image', {
                 'color': '#00aa00'
@@ -23,7 +24,10 @@
                 'color': '#aaaa00'
             });
 
-            d.defineNode('node_test', {
+            d.addNode(n = new flowdesigner.node(d, {
+				'label': 'Node #1',
+				'x': 125,
+				'y': 35,
                 'input': [
                     {
                         'name': 'in-1',
@@ -37,12 +41,25 @@
                     }
                 ],
                 'output': [
-                    {'name': 'out-1', 'label': 'Image', 'scopes': ['image']},
-                    {'name': 'out-2', 'label': 'Control', 'scopes': ['ctrl']}
+                    {
+						'name': 'out-1',
+						'label': 'Image',
+						'scopes': ['image']
+					},
+                    {
+						'name': 'out-2',
+						'label': 'Control',
+						'scopes': ['ctrl']
+					}
                 ]
-            });
-            d.defineNode('node_test2', {
+            }));
+			n.render();
+			
+            d.addNode(n = new flowdesigner.node(d, {
+				'label': 'Node #2',
                 'color': '#550000',
+				'x': 426,
+				'y': 142,
                 'input': [
                     {
                         'name': 'in-1',
@@ -56,17 +73,33 @@
                     }
                 ],
                 'output': [
-                    {'name': 'out-1', 'label': 'Image', 'scopes': ['image']}
+                    {
+						'name': 'out-1',
+						'label': 'Image',
+						'scopes': ['image']
+					}
                 ]
-            });
+            }));
+			n.render();
 
-            d.addNodes(
-                [{"node":"node_test","name":"node-1","label":"Node #1","id":"node-1","x":125,"y":35},{"node":"node_test","name":"node-2","label":"Node #2","id":"node-2","x":426,"y":142},{"node":"node_test2","name":"node-3","label":"Node #3","id":"node-3","x":725,"y":35}]
-            );
-
-            d.addWires(
+            d.addNode(n = new flowdesigner.node(d, {
+				'label': 'Node #3',
+                'color': '#55aa00',
+				'x': 725,
+				'y': 35,
+                'input': [
+                    {
+                        'name': 'in-1',
+                        'label': 'Output',
+                        'scopes': ['image']
+                    }
+                ]
+            }));
+			n.render();
+		
+/*            d.addWires(
     [{"source":"node-1-out-1","target":"node-2-in-1"},{"source":"node-1-out-2","target":"node-2-in-2"},{"source":"node-1-out-1","target":"node-3-in-1"},{"source":"node-2-out-1","target":"node-3-in-2"}]
-            );
+            );*/
         })();
         </script>
     </body>
