@@ -285,11 +285,10 @@
 
                             var sxy = me.getConnectorCenter(me.registry[start].cn);
                             var exy = me.getConnectorCenter(connector.cn);
-                            var txy = calcLine(sxy.x, sxy.y, exy.x, exy.y);
 
                             me.diagram.getLayer('draw');
 
-                            wire.set({pathData: 'M' + sxy.x + ',' + sxy.y + ' L' + txy.x + ',' + txy.y});
+                            wire.set({pathData: 'M' + sxy.x + ',' + sxy.y + ' L' + exy.x + ',' + exy.y});
                         }
                     }
                 }
