@@ -252,6 +252,7 @@
                     if (wire !== null && end === null) {
                         var xy = me.getConnectorCenter(me.registry[start].cn);
                         var txy = calcLine(xy.x, xy.y, event.point.x, event.point.y);
+                        var txy = { x: event.point.x, y: event.point.y };
 
                         me.diagram.getLayer('draw');
 
@@ -285,7 +286,8 @@
 
                             var sxy = me.getConnectorCenter(me.registry[start].cn);
                             var exy = me.getConnectorCenter(connector.cn);
-                            var txy = calcLine(sxy.x, sxy.y, exy.x, exy.y);
+//                            var txy = calcLine(sxy.x, sxy.y, exy.x, exy.y);
+                            var txy = exy;
 
                             me.diagram.getLayer('draw');
 

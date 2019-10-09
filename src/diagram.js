@@ -308,12 +308,14 @@
     diagram.prototype.importJson = function(data)
     {
         data.nodes.forEach(function(node) {
-            this.addNode()
+            this.addNode(new flowdesigner.node(this, node));
         });
 
         data.wires.forEach(function(wire) {
             this.addWire(wire);
         }, this);
+        
+        this.render();
     }
 
     /**
