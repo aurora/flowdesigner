@@ -17,3 +17,7 @@ Especially the event-handling will probably change until the library becomes sta
 * Panable (using SHIFT + drag/drop)
 * Custom nodes
 * Connectors with different scopes
+
+## Example
+
+https://aurora.github.io/flowdesigner/
